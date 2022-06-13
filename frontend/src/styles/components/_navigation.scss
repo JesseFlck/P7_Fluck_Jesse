@@ -1,0 +1,23 @@
+.navigation {
+    margin: 26px 0;
+    display: flex;
+
+    a {
+        margin: 10px;
+        padding: 10px;
+        position: relative;
+    }
+
+    .activated {
+        &::after{
+            content: "";
+            width: 60%;
+            height: 3px;
+            background: $couleur-primaire;
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+}

@@ -1,0 +1,72 @@
+.formsignup, .formlogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    label {
+        padding: 5px;
+        width: 400px;
+
+        input {
+            width: 100%;
+        }
+    }
+
+    .boutonform {
+        margin-top: 20px;
+        background-color: $couleur-secondaire;
+        border: 2px grey solid;
+        border-radius: 5px;
+        font-weight: bold;
+        padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        transition: background-color 300ms;
+
+        &:hover{
+            cursor: pointer;
+            background-color: #ffa8a8;
+        }
+    }
+}
+
+
+
+.formpost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    label {
+        padding: 5px;
+        width: 400px;
+
+        input {
+            width: 100%;
+        }
+    
+        input[name="content"]{
+            max-width: 400px;
+            min-height: 200px;
+            height: auto;
+            word-wrap: break-word;
+        }
+    }
+
+    .boutonform {
+        margin-top: 20px;
+        background-color: $couleur-secondaire;
+        border: 2px grey solid;
+        border-radius: 5px;
+        font-weight: bold;
+        padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        transition: background-color 300ms;
+
+        &:hover{
+            cursor: pointer;
+            background-color: #ffa8a8;
+        }
+    }
+}
