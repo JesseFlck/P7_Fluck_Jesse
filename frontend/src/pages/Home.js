@@ -6,7 +6,7 @@ import Posts from '../components/Posts';
 const Home = () => {
     return(
         <div className="home">
-            <header>
+            <header className='connectedHeader'>
                 <Logo />
                 <Navigation />
             </header>

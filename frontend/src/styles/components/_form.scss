@@ -1,3 +1,8 @@
+.postBody > .formsignup, .formlogin, .formpost {
+    text-align: left;
+}
+
+
 .formsignup, .formlogin {
     display: flex;
     flex-direction: column;
@@ -39,17 +44,21 @@
 
     label {
         padding: 5px;
-        width: 400px;
+        width: 90%;
 
         input {
             width: 100%;
+            background-color: $couleur-tertiaire;
         }
     
         input[name="content"]{
-            max-width: 400px;
+            max-width: 100%;
             min-height: 200px;
             height: auto;
             word-wrap: break-word;
+            color: #ffffff;
+            margin: 0;
+            padding: 10px;
         }
     }
 

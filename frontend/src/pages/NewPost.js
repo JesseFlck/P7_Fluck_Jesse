@@ -6,7 +6,7 @@ import Navigation from '../components/Navigation';
 const NewPost = () => {
     return (
         <div>
-            <header>
+            <header className='connectedHeader'>
                 <Logo />
                 <Navigation />
             </header>

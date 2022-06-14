@@ -5,7 +5,7 @@ import Navigation from '../components/Navigation';
 const Profile = () => {
     return (
         <div>
-            <header>
+            <header className='connectedHeader'>
                 <Logo />
                 <Navigation />
             </header>

@@ -1,10 +1,23 @@
-header {
+.connectedHeader {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    padding-bottom: 50px;
 
     img{
-        width: 200px;
+        width: 400px;
         height: auto;
+    }
+}
+
+.disconnectedHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    img{
+        width: 500px;
+        height: auto;
+        margin: auto;
     }
 }

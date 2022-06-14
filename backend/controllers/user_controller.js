@@ -5,54 +5,38 @@ const passwordValidator = require('password-validator');
 const fs = require('fs');
 //const AES = require('aes-encryption');
 
-// Format imposé au mot de passe
+//Format imposé du mot de passe
 const passwordSchema = new passwordValidator();
 passwordSchema
+    .is().min(6)                                    // Minimum 6 caractères
+    .is().max(30)                                   // Maximum 30 caractères
+    .has().uppercase()                              // Doit contenir au moins une majuscule
+    .has().lowercase()                              // Doit contenir au moins une minuscule
+    .has().digits(2)                                // Doit avoir au moins 2 chiffres
+    .has().not().spaces()                           // Ne doit pas avoir d'espaces
+    .is().not().oneOf(['Passw0rd', 'Password123', 'azerty1234']); // Liste de mots de passes interdits
 
+//Création d'un utilisateur
 exports.signup = (req, res, next) => {
-    bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-            const user = new User({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
-                password: hash,
-            });
-            user.save()
-                .then(() =>
-                    res.status(201).json({ message: 'Utilisateur créé !' })
-                )
-                .catch((error) => res.status(400).json({ error }));
-        })
-        .catch((error) => res.status(501).json({ error : 'its a fail' }));
-};
-
-/*// Création d'un utilisateur
-exports.signup = (req, res, next) => {
-    const User = new User({
-    //const { firstName, lastName, email, password } = req.body;
-    //const user = new userSchema({
-        firstName : req.body.firstName,
-        lastName : req.body.lastName,
-        email : req.body.email,
-        password : req.body.password,
-    })
-    if (!User.firstName || !User.lastName || !User.email || !User.password) {
-        return res.status(400).json({ error: 'Veuillez remplir tous les champs svp' });
+    const { firstName, lastName, email, password } = req.body;
+    if (!firstName || !lastName || !email || !password) {
+        return res.status(400).json({ error: 'Veuillez remplir tous les champs' });
     }
-    else if (!passwordSchema.validate(password)) {
+    if (!passwordSchema.validate(password)) {
         return res.status(400).json({ error: 'Mot de passe incorrect' });
     }
-    //const cryptedEmail = AES.encrypt(email); // Chiffrage de l'adresse mail
-    user.findOne({ email: req.body.email })
+   User.findOne({
+        where: {
+            email: email
+        }
+    })
         .then(user => {
             if (user) {
                 return res.status(400).json({ error: 'Cet email est déjà utilisé' });
             }
             const salt = bcrypt.genSaltSync(10);
-            const hashPassword = bcrypt.hashSync(password, salt); // Hash du mot de passe
-            user.create({
+            const hashPassword = bcrypt.hashSync(password, salt); //Chiffrage du mot de passe
+            User.create({
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
@@ -63,17 +47,15 @@ exports.signup = (req, res, next) => {
                 .catch(error => { res.status(400).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur' });
                 });
         })
-        .catch(error => { res.status(500).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur', message: error.message });
+        .catch(error => { res.status(500).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur'});
         });
-};*/
+};
 
-
-// Connexion d'un utilisateur
+//Connexion d'un utilisateur
 
 exports.login = (req, res, next) =>{
-    const email = req.body.email;
-    //const cryptedEmail = AES.encrypt(req.body.email);
-    User.findOne({ email: req.body.email })
+    const { firstName, lastName, email, password } = req.body;
+    User.findOne({ where: { email: email }})
         .then(user => {
             if (!user) {
                 return res.status(400).json({ error: 'Utilisateur non trouvé' });
@@ -84,16 +66,16 @@ exports.login = (req, res, next) =>{
             res.status(200).json({
                 userId: user.id,
                 isAdmin: user.isAdmin,
-                token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin}, 'process.env.TOKEN',{ expiresIn: '24h' }) // Generation du token d'authentification
+                token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin}, 'process.env.TOKEN',{ expiresIn: '24h' }) //Generation du token d'authentification
             });
         })
         .catch(error => res.status(500).json({ error: 'Une erreur est survenue lors de la connexion', message: error.message }));
 };
 
-// Modification de l'utilisateur
+//Modification de l'utilisateur
 
 exports.modifyUser = (req, res, next) => {
-    if(req.file === undefined){ // Changement des données de l'utilisateur sans modification de l'image
+    if(req.file === undefined){ //Changement des données de l'utilisateur sans modification de l'image
         User.findOne({ where: { id : req.params.id } })
             .then(user =>{
                 if (user.id === req.token.userId){
@@ -125,7 +107,7 @@ exports.modifyUser = (req, res, next) => {
 };
                         
 
-// Suppression d'un utilisateur par l'utilisateur ou l'administrateur
+//Suppression d'un utilisateur par l'utilisateur ou l'utilisateur administrateur
 exports.deleteUser = (req, res, next) => {
     User.findOne({ where: { id: req.params.id } })
         .then((user) => {
@@ -143,7 +125,7 @@ exports.deleteUser = (req, res, next) => {
         .catch(error => res.status(500).json({ error, message : error.message }));
 };
 
-// Récuperation de tous les utilisateurs
+//Récuperation de tous les utilisateurs
 
 exports.getAllUsers = (req, res, next) => {
     User.findAll({ order: [['createdAt', 'DESC']],})
@@ -157,7 +139,7 @@ exports.getAllUsers = (req, res, next) => {
         .catch(error => res.status(500).json({ error, message: error.message }));
 };
 
-// Récupération d'un seul utilisateur
+//Récupération d'un seul utilisateur
 
 exports.getOneUser = (req, res, next) => {
     User.findOne({ where: { id: req.params.id}})
@@ -166,6 +148,24 @@ exports.getOneUser = (req, res, next) => {
                 res.status(200).json(user);
             } else {
                 res.status(403).json({ message: '403: Unauthorized request'});
+            }
+        })
+        .catch(error => res.status(500).json({ error, message: error.message }));
+};
+
+//Suppression d'un utilisateur par l'administrateur ou par l'utilisateur
+exports.deleteUserImage = (req, res, next) => {
+    User.findOne({ where: { id: req.params.id } })
+        .then((user) => {
+            if (user.id === req.token.userId || req.token.isAdmin) {
+                const filename = user.imageUrl.split('/images/')[1];
+                fs.unlink(`images/${filename}`, () => {
+                    User.update({...user, imageUrl: 'https://i.postimg.cc/MHrVKYGM/default-profil-pict.jpg'}, { where: { id: req.params.id }})
+                        .then(() => res.status(201).json({ message: 'Image supprimée !' }))
+                        .catch(error => res.status(400).json({ error, message: error.message }));
+                });
+            } else {
+                res.status(403).json({ message: '403: Unauthorized request' });
             }
         })
         .catch(error => res.status(500).json({ error, message: error.message }));
