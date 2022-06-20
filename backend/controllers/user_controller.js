@@ -26,12 +26,12 @@ exports.signup = (req, res, next) => {
         return res.status(400).json({ error: 'Mot de passe incorrect' });
     }
    User.findOne({
-        where: {
             email: email
-        }
     })
         .then(user => {
             if (user) {
+                console.log(user);
+                console.log(email);
                 return res.status(400).json({ error: 'Cet email est déjà utilisé' });
             }
             const salt = bcrypt.genSaltSync(10);
@@ -41,13 +41,15 @@ exports.signup = (req, res, next) => {
                 lastName: lastName,
                 email: email,
                 password: hashPassword,
+                isAdmin: 'false',
+                imageUrl: 'false'
             })
                 .then(() => { res.status(201).json({ message: 'Utilisateur créé avec succès !' });
                 })
-                .catch(error => { res.status(400).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur' });
+                .catch((error) => { res.status(400).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur' });
                 });
         })
-        .catch(error => { res.status(500).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur'});
+        .catch((error) => { res.status(500).json({ error: 'Une erreur est survenue lors de la création de l\'utilisateur'});
         });
 };
 
@@ -55,18 +57,18 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) =>{
     const { firstName, lastName, email, password } = req.body;
-    User.findOne({ where: { email: email }})
+    User.findOne({email: email})
         .then(user => {
             if (!user) {
                 return res.status(400).json({ error: 'Utilisateur non trouvé' });
             }
-            if (!bcrypt.compareSync(req.body.password, user.password)) {
+            if (!bcrypt.compare(req.body.password, user.password)) {
                 return res.status(400).json({ error: 'Mot de passe incorrect' });
             }
             res.status(200).json({
                 userId: user.id,
                 isAdmin: user.isAdmin,
-                token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin}, 'process.env.TOKEN',{ expiresIn: '24h' }) //Generation du token d'authentification
+                token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin}, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }) //Generation du token d'authentification
             });
         })
         .catch(error => res.status(500).json({ error: 'Une erreur est survenue lors de la connexion', message: error.message }));
@@ -79,7 +81,7 @@ exports.modifyUser = (req, res, next) => {
         User.findOne({ where: { id : req.params.id } })
             .then(user =>{
                 if (user.id === req.token.userId){
-                    User.update({...user, firstName: req.body.firstName, lastName: req.body.lastName}, { where: { id: req.params.id }})
+                    User.updateOne({...user, firstName: req.body.firstName, lastName: req.body.lastName}, { where: { id: req.params.id }})
                     .then(() => res.status(201).json({ message: 'Utilisateur modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
                 } else {
@@ -94,7 +96,7 @@ exports.modifyUser = (req, res, next) => {
                 if (user.id === req.token.userId){
                     const filename = user.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () => {
-                    User.update({...user, firstName: req.body.firstName, lastName: req.body.lastName, imageUrl: userImage}, {where: {id: req.params.id}})
+                    User.updateOne({...user, firstName: req.body.firstName, lastName: req.body.lastName, imageUrl: userImage}, {where: {id: req.params.id}})
                         .then(() => res.status(201).json({ message: 'Utilisateur modifié !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                     });
@@ -111,10 +113,10 @@ exports.modifyUser = (req, res, next) => {
 exports.deleteUser = (req, res, next) => {
     User.findOne({ where: { id: req.params.id } })
         .then((user) => {
-            if (user.id === req.token.userId || req.token.isAdmin) {
+            if (user.id === req.body.userId || req.body.isAdmin) {
                 const filename = user.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
-                    User.destroy({ where: { id: req.params.id } })
+                    User.deleteOne({ where: { id: req.params.id } })
                         .then(() => res.status(201).json({ message: 'Utilisateur supprimé !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 });
@@ -128,9 +130,9 @@ exports.deleteUser = (req, res, next) => {
 //Récuperation de tous les utilisateurs
 
 exports.getAllUsers = (req, res, next) => {
-    User.findAll({ order: [['createdAt', 'DESC']],})
+    User.find({ order: [['createdAt', 'DESC']],})
         .then((user)=>{
-            if (user.id === req.token.userId || req.token.isAdmin){
+            if (user.id === req.body.userId || req.body.isAdmin){
                 res.status(200).json(user);
             } else {
                 res.status(403).json({ message: '403: Unauthorized request'});
@@ -144,7 +146,7 @@ exports.getAllUsers = (req, res, next) => {
 exports.getOneUser = (req, res, next) => {
     User.findOne({ where: { id: req.params.id}})
         .then((user) => {
-            if (user.id === req.token.userId || req.token.isAdmin){
+            if (user.id === req.body.userId || req.body.isAdmin){
                 res.status(200).json(user);
             } else {
                 res.status(403).json({ message: '403: Unauthorized request'});
@@ -157,10 +159,10 @@ exports.getOneUser = (req, res, next) => {
 exports.deleteUserImage = (req, res, next) => {
     User.findOne({ where: { id: req.params.id } })
         .then((user) => {
-            if (user.id === req.token.userId || req.token.isAdmin) {
+            if (user.id === req.body.userId || req.body.isAdmin) {
                 const filename = user.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
-                    User.update({...user, imageUrl: 'https://i.postimg.cc/MHrVKYGM/default-profil-pict.jpg'}, { where: { id: req.params.id }})
+                    User.updateOne({...user, imageUrl: 'https://i.postimg.cc/MHrVKYGM/default-profil-pict.jpg'}, { where: { id: req.params.id }})
                         .then(() => res.status(201).json({ message: 'Image supprimée !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 });

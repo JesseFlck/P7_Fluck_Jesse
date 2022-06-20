@@ -1,21 +1,15 @@
-const DataTypes = require('sequelize');
+// Importation des modules
 
-const Post = ('Post', {
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    content: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    imageUrl: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
-},{
-    freezeTableName : true,
+const mongoose = require('mongoose');
+
+
+// Modèle des posts
+
+const Post = mongoose.Schema ({
+    title: {type: String, required: true},
+    content: {type: String, required: true},
+    imageUrl: {type: String, required: false},
 });
 
 
-module.exports = Post;
+module.exports = mongoose.model('posts', Post);

@@ -1,12 +1,12 @@
-const DataTypes = require('sequelize');
+// Importation des modules
+
+const mongoose = require('mongoose');
+
+
+// Modèle des commentaires
 
 const Comment = ('Comment', {
-    content: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-},{
-    freezeTableName : true,
+    content: {type: String, required: true},
 });
 
-module.exports = Comment;
+module.exports = mongoose.model('comments', Comment);

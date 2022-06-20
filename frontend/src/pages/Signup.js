@@ -2,6 +2,13 @@ import React from 'react';
 import Logo from '../components/Logo';
 import Navigation from '../components/Navigation';
 
+fetch('http://localhost:3001/api/auth/')
+    .then(function (res) {
+        if (res.ok) {
+            return res.json();
+        }
+    })
+
 const Signup = () => {
     return (
         <div>

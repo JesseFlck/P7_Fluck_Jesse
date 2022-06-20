@@ -12,7 +12,7 @@ const app = express();
 
 mongoose
     .connect(
-        'mongodb+srv://JesseFlck:azertytest@groupomania.tnort.mongodb.net/?retryWrites=true&w=majority',
+        'mongodb+srv://JesseFlck:azertytest@groupomania.tnort.mongodb.net/Groupomania?retryWrites=true&w=majority',
         { useNewUrlParser: true, useUnifiedTopology: true }
     )
     .then(() => console.log('Connexion à MongoDB réussie !'))

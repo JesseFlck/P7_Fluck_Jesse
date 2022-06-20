@@ -1,13 +1,14 @@
 const Comment = require('../models/comment_model');
 const Post = require('../models/post_model');
 const User = require('../models/user_model');
+const fs = require('fs');
 
 // Création d'un commmentaire
 exports.newComment = (req, res, next) => {
     const reply= {
         content: req.body.content,
         PostId: req.body.postId,
-        UserId: req.token.userId
+        UserId: req.body.userId
     };
     Comment.create(reply)
     .then(() => res.status(201).json({ message: 'Réponse envoyée' }))
@@ -20,7 +21,7 @@ exports.deleteComment = (req, res, next) => {
         where: { id: req.params.id },
         })
         .then((comment)=>{
-            Comment.destroy({ where: { id: req.params.id } })
+            Comment.deleteOne({ where: { id: req.params.id } })
                 .then(() => res.status(200).json({ message : "Commentaire supprimé"}))
                 .catch(error => res.status(400).json({ error }));                    
         })
@@ -29,7 +30,7 @@ exports.deleteComment = (req, res, next) => {
 
 // Récupération de touts les commentaires, avec noms d'utilisateurs
 exports.getAllComments = (req, res, next) => {
-    Comment.findAll({
+    Comment.find({
         order: [['createdAt', 'DESC']],
         include: [{
             model: User,
@@ -57,7 +58,7 @@ exports.getOneComment = (req, res, next) =>{
 exports.updateComment = (req, res, next) =>{
     Comment.findOne({where:{id: req.params.id} })
         .then(comment =>{
-            if(comment.UserId === req.token.userId || comment.isAdmin === req.token.isAdmin){
+            if(comment.UserId === req.body.userId || comment.isAdmin === req.body.isAdmin){
                 Comment.update({...comment, content: req.body.content}, { where: { id: req.params.id }})
                 .then(() => res.status(200).json({ message: 'Commentaire modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));

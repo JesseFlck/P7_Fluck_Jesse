@@ -1,7 +1,7 @@
 // Importation des modules
 
 const mongoose = require('mongoose');
-//const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 // Schema de l'utilisateur
 
@@ -12,8 +12,8 @@ const User = mongoose.Schema ({
     password: { type: String, required: true },
     isAdmin: {type: Boolean, required: false, defaultValue: false},
     imageUrl: {type: String, required: false, defaultValue: 'https://zupimages.net/up/22/22/e3uh.jpg'}
-/*},{
-    freezeTableName : true,*/
 });
 
-module.exports = mongoose.model('user', User);
+User.plugin(uniqueValidator);
+
+module.exports = mongoose.model('Users', User);

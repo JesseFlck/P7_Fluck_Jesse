@@ -1,4 +1,4 @@
-// Import des éléments nécessaires à l'authentification
+/*// Import des éléments nécessaires à l'authentification
 
 const bcrypt = require("bcrypt");
 const models = require('../models/index_model');
@@ -78,3 +78,4 @@ exports.logout = async (req, res) => {
   res.cookie('jwt', '', { maxAge: 1 });
   res.redirect('/');
 }
+*/

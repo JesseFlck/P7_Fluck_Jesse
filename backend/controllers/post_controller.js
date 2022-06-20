@@ -9,7 +9,7 @@ exports.newPost = (req, res, next) => {
         const post = {
             title: req.body.title,
             content: req.body.content,
-            UserId: req.token.userId
+            UserId: req.body.userId
         };
         Post.create(post)
             .then(() => res.status(201).json({ message: 'Post créé !' }))
@@ -18,14 +18,15 @@ exports.newPost = (req, res, next) => {
         const post = {
             title: req.body.title,
             content: req.body.content,
-            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-            UserId: req.token.userId
+            imageUrl: `/images/${req.file.filename}`,
+            UserId: req.body.userId
         };
         Post.create(post)
         .then(() => res.status(201).json({ message: 'Post créé !' }))
-        .catch(error => res.status(401).json({ error, message: error.message }));
+        .catch(error => res.status(402).json({ error, message: error.message }));
     } else {
-        return res.status(401).json({message : "Un champ ne peut être vide"});
+        console.log(req.file);
+        return res.status(403).json({message : "Un champ ne peut être vide"});
     }
 };
 
@@ -35,8 +36,8 @@ exports.updatePost = (req, res, next) => {
     if (req.file === undefined) { // Sans image
         Post.findOne({ where: { id: req.params.id } })
             .then(post => {
-                if (post.UserId === req.token.userId || post.isAdmin === req.token.isAdmin ) {
-                    Post.update({...post, title: req.body.title, content: req.body.content}, { where: { id: req.params.id }})
+                if (post.UserId === req.body.userId || post.isAdmin === req.body.isAdmin ) {
+                    Post.updateOne({...post, title: req.body.title, content: req.body.content}, { where: { id: req.params.id }})
                         .then(() => res.status(201).json({ message: 'Post modifié !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 } else {
@@ -48,8 +49,8 @@ exports.updatePost = (req, res, next) => {
         const postImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
         Post.findOne({ where: { id: req.params.id } })
         .then(post => {
-            if (post.UserId === req.token.userId || post.isAdmin === req.token.isAdmin ) {
-                Post.update({...post, title: req.body.title, content: req.body.content, imageUrl: postImage}, { where: { id: req.params.id }})
+            if (post.UserId === req.body.userId || post.isAdmin === req.body.isAdmin ) {
+                Post.updateOne({...post, title: req.body.title, content: req.body.content, imageUrl: postImage}, { where: { id: req.params.id }})
                     .then(() => res.status(200).json({ message: 'Post modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
             } else {
@@ -65,15 +66,15 @@ exports.updatePost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     Post.findOne({ where: { id: req.params.id } })
         .then(post => {
-            if (post.UserId === req.token.userId  || req.token.isAdmin) {
-                if (post.imageUrl === null) { // Sans image
-                    Post.destroy({ where: { id: req.params.id } })
+            if (post.UserId === req.body.userId  || req.body.isAdmin) {
+                if (post.imageUrl === undefined) { // Sans image
+                    Post.deleteOne({ where: { id: req.params.id } })
                         .then(() => res.status(201).json({ message: 'Post supprimé !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 } else { // Avec image
                     const filename = post.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () =>
-                    Post.destroy({ where: { id: req.params.id } })
+                    Post.deleteOne({ where: { id: req.params.id } })
                         .then(() => res.status(200).json({ message: 'Post supprimé !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }))
                     );
@@ -88,7 +89,7 @@ exports.deletePost = (req, res, next) => {
 // Recupération de tout les posts
 
 exports.getAllPosts = (req, res, next) => {
-    Post.findAll({
+    Post.find({
         order: [['createdAt', 'DESC']],
         include: [{
             model: User,
