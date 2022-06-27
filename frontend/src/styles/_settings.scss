@@ -5,6 +5,7 @@ $font-1: 'Lato', sans-serif;
 $couleur-primaire: #FD2D01;
 $couleur-secondaire: #FFD7D7;
 $couleur-tertiaire: #4E5166;
+$couleur-bg: #f7f7f7;
 
 
 * {
@@ -18,7 +19,7 @@ body {
     max-width: 100%;
     font-family: $font-1;
     color: $couleur-tertiaire;
-    background-color: #ffffff;
+    background-color: $couleur-bg;
 }
 
 li {
@@ -42,4 +43,5 @@ h1 {
     text-transform: uppercase;
     text-decoration: underline;
     padding-bottom: 50px;
+    font-size: 30px;
 }

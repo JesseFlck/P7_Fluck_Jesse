@@ -17,11 +17,9 @@ exports.newComment = (req, res, next) => {
 
 // Suppression d'un commentaire
 exports.deleteComment = (req, res, next) => {
-    Comment.findOne({ 
-        where: { id: req.params.id },
-        })
+    Comment.findOne({ _id: req.params.id })
         .then((comment)=>{
-            Comment.deleteOne({ where: { id: req.params.id } })
+            comment.deleteOne({ _id: req.params.id })
                 .then(() => res.status(200).json({ message : "Commentaire supprimé"}))
                 .catch(error => res.status(400).json({ error }));                    
         })
@@ -41,10 +39,9 @@ exports.getAllComments = (req, res, next) => {
         .catch(error => res.status(400).json({ error }));
 };
 
-// Récupération des commentaires d'un seul utilisateur
+// Récupération des commentaires d'un seul post (à modif)
 exports.getOneComment = (req, res, next) =>{
-    Comment.findOne({
-        where:{id: req.params.id}, 
+    Comment.findOne({ _id: req.params.id, 
         include: [{
             model: User, 
             attributes: ['id', 'firstName', 'lastName']
@@ -56,10 +53,10 @@ exports.getOneComment = (req, res, next) =>{
 
 // Mise à jour d'un commentaire
 exports.updateComment = (req, res, next) =>{
-    Comment.findOne({where:{id: req.params.id} })
+    Comment.findOne({ _id: req.params.id })
         .then(comment =>{
             if(comment.UserId === req.body.userId || comment.isAdmin === req.body.isAdmin){
-                Comment.update({...comment, content: req.body.content}, { where: { id: req.params.id }})
+                Comment.updateOne({...comment, content: req.body.content}, { id: req.params.id })
                 .then(() => res.status(200).json({ message: 'Commentaire modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
             } else {

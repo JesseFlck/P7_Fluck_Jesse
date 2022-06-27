@@ -34,10 +34,10 @@ exports.newPost = (req, res, next) => {
 
 exports.updatePost = (req, res, next) => {
     if (req.file === undefined) { // Sans image
-        Post.findOne({ where: { id: req.params.id } })
+        Post.findOne({ _id: req.params.id })
             .then(post => {
                 if (post.UserId === req.body.userId || post.isAdmin === req.body.isAdmin ) {
-                    Post.updateOne({...post, title: req.body.title, content: req.body.content}, { where: { id: req.params.id }})
+                    Post.updateOne({...post, title: req.body.title, content: req.body.content}, { id: req.params.id })
                         .then(() => res.status(201).json({ message: 'Post modifié !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 } else {
@@ -47,10 +47,10 @@ exports.updatePost = (req, res, next) => {
             .catch(error => res.status(500).json({ error, message: error.message }));
     } else { // Avec image
         const postImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-        Post.findOne({ where: { id: req.params.id } })
+        Post.findOne({ _id: req.params.id })
         .then(post => {
             if (post.UserId === req.body.userId || post.isAdmin === req.body.isAdmin ) {
-                Post.updateOne({...post, title: req.body.title, content: req.body.content, imageUrl: postImage}, { where: { id: req.params.id }})
+                Post.updateOne({...post, title: req.body.title, content: req.body.content, imageUrl: postImage}, { _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Post modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
             } else {
@@ -64,17 +64,17 @@ exports.updatePost = (req, res, next) => {
 // Suppression d'un post par son auteur ou l'adminisrateur
 
 exports.deletePost = (req, res, next) => {
-    Post.findOne({ where: { id: req.params.id } })
+    Post.findOne({ _id: req.params.id })
         .then(post => {
             if (post.UserId === req.body.userId  || req.body.isAdmin) {
                 if (post.imageUrl === undefined) { // Sans image
-                    Post.deleteOne({ where: { id: req.params.id } })
+                    Post.deleteOne( { id: req.params.id })
                         .then(() => res.status(201).json({ message: 'Post supprimé !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 } else { // Avec image
                     const filename = post.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () =>
-                    Post.deleteOne({ where: { id: req.params.id } })
+                    Post.deleteOne({ id: req.params.id })
                         .then(() => res.status(200).json({ message: 'Post supprimé !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }))
                     );
@@ -103,15 +103,12 @@ exports.getAllPosts = (req, res, next) => {
 // Récupération d'un seul post
 
 exports.getOnePost = (req, res, next) => {
-    Post.findOne({
-        where: {
-            id: req.params.id
-        },
+    Post.findOne({ _id: req.params.id,
         include: [{
             model: User,
             attributes: ['id', 'firstName', 'lastName']
         },]
-    })
+})
         .then(post => { res.status(200).json(post)})
         .catch(error => res.status(500).json({ error, message: error.message }));
 };

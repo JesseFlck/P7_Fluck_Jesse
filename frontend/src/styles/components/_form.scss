@@ -7,13 +7,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #fff;
+    width: 25%;
+    margin: auto;
+    border-radius: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    box-shadow: 2px 2px 5px lightgray;
 
     label {
         padding: 5px;
-        width: 400px;
+        width: 90%;
 
         input {
             width: 100%;
+            
+            &:focus-visible {
+                border-color: lightgray;
+            }
         }
     }
 
@@ -36,6 +47,9 @@
 }
 
 
+.createpost {
+    padding-bottom: 30px;
+}
 
 .formpost {
     display: flex;
@@ -48,7 +62,7 @@
 
         input {
             width: 100%;
-            background-color: $couleur-tertiaire;
+            background-color: #ffffff;
         }
     
         input[name="content"]{
@@ -56,7 +70,7 @@
             min-height: 200px;
             height: auto;
             word-wrap: break-word;
-            color: #ffffff;
+            color: #000000;
             margin: 0;
             padding: 10px;
         }

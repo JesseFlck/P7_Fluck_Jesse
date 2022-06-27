@@ -46,7 +46,7 @@ module.exports.signUp = async (req, res) => {
 
 module.exports.signIn = async (req, res) => {
 
-  models.users.findOne({ where: { email: req.body.email } })
+  models.users.findOne({ email: req.body.email })
 
     // Si l'email il n'existe pas dans la base de données
     .then((user) => {

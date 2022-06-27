@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const passwordValidator = require('password-validator');
 const fs = require('fs');
+const { stringify } = require('querystring');
 //const AES = require('aes-encryption');
 
 //Format imposé du mot de passe
@@ -66,9 +67,9 @@ exports.login = (req, res, next) =>{
                 return res.status(400).json({ error: 'Mot de passe incorrect' });
             }
             res.status(200).json({
-                userId: user.id,
+                userId: user._id,
                 isAdmin: user.isAdmin,
-                token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin}, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }) //Generation du token d'authentification
+                token: jwt.sign({ userId: user._id, isAdmin: user.isAdmin}, 'RANDOM_TOKEN_SECRET', { expiresIn: '24h' }) //Generation du token d'authentification
             });
         })
         .catch(error => res.status(500).json({ error: 'Une erreur est survenue lors de la connexion', message: error.message }));
@@ -78,10 +79,15 @@ exports.login = (req, res, next) =>{
 
 exports.modifyUser = (req, res, next) => {
     if(req.file === undefined){ //Changement des données de l'utilisateur sans modification de l'image
-        User.findOne({ where: { id : req.params.id } })
+        const ObjectId = require('mongodb').ObjectId;
+        const id = ObjectId(req.params.id); // convert to ObjectId
+        User.findOne({ _id: id })
             .then(user =>{
-                if (user.id === req.token.userId){
-                    User.updateOne({...user, firstName: req.body.firstName, lastName: req.body.lastName}, { where: { id: req.params.id }})
+                console.log(user._id)
+                console.log(req.auth.userId)
+                if (toString(user._id) === toString(req.auth.userId)){
+                    User.findOneAndUpdate({_id: id}, {firstName:req.body.firstName, lastName:req.body.lastName, email:req.body.email}) 
+                    //User.updateOne({ _id: id })
                     .then(() => res.status(201).json({ message: 'Utilisateur modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
                 } else {
@@ -91,12 +97,12 @@ exports.modifyUser = (req, res, next) => {
             .catch(error => res.status(500).json({ error, message: error.message }));        
     } else { // Modification de toutes les données de l'utilisateur
         const userImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-        User.findOne({ where: { id: req.params.id } })
+        User.findOne({ _id: id })
             .then((user) => { 
-                if (user.id === req.token.userId){
+                if (user._id === req.token.userId){
                     const filename = user.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () => {
-                    User.updateOne({...user, firstName: req.body.firstName, lastName: req.body.lastName, imageUrl: userImage}, {where: {id: req.params.id}})
+                    User.updateOne({...user, firstName: req.body.firstName, lastName: req.body.lastName, imageUrl: userImage}, { _id: req.params.id })
                         .then(() => res.status(201).json({ message: 'Utilisateur modifié !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                     });
@@ -109,17 +115,25 @@ exports.modifyUser = (req, res, next) => {
 };
                         
 
-//Suppression d'un utilisateur par l'utilisateur ou l'utilisateur administrateur
+//Suppression d'un utilisateur par l'utilisateur ou l'administrateur
 exports.deleteUser = (req, res, next) => {
-    User.findOne({ where: { id: req.params.id } })
+    const ObjectId = require('mongodb').ObjectId;
+    const id = ObjectId(req.params.id); // convert to ObjectId
+    User.findOne({ _id: id })
         .then((user) => {
-            if (user.id === req.body.userId || req.body.isAdmin) {
-                const filename = user.imageUrl.split('/images/')[1];
-                fs.unlink(`images/${filename}`, () => {
-                    User.deleteOne({ where: { id: req.params.id } })
-                        .then(() => res.status(201).json({ message: 'Utilisateur supprimé !' }))
-                        .catch(error => res.status(400).json({ error, message: error.message }));
-                });
+            if (toString(user._id) == toString(id) || req.auth.isAdmin) {
+                if(!user.imageUrl){
+                    User.deleteOne({ _id: id })
+                            .then(() => res.status(201).json({ message: 'Utilisateur supprimé !' }))
+                            .catch(error => res.status(400).json({ error, message: error.message }));
+                }else{
+                    const filename = user.imageUrl.split('/images/')[1];
+                    fs.unlink(`images/${filename}`, () => {
+                        User.deleteOne({ _id: id })
+                            .then(() => res.status(201).json({ message: 'Utilisateur supprimé !' }))
+                            .catch(error => res.status(400).json({ error, message: error.message }));
+                    });
+                }
             } else{
                 res.status(403).json({message: '403: Unauthorized request'});
             }
@@ -132,7 +146,7 @@ exports.deleteUser = (req, res, next) => {
 exports.getAllUsers = (req, res, next) => {
     User.find({ order: [['createdAt', 'DESC']],})
         .then((user)=>{
-            if (user.id === req.body.userId || req.body.isAdmin){
+            if (user._id === req.body.userId || req.body.isAdmin){
                 res.status(200).json(user);
             } else {
                 res.status(403).json({ message: '403: Unauthorized request'});
@@ -144,9 +158,11 @@ exports.getAllUsers = (req, res, next) => {
 //Récupération d'un seul utilisateur
 
 exports.getOneUser = (req, res, next) => {
-    User.findOne({ where: { id: req.params.id}})
+    const ObjectId = require('mongodb').ObjectId;
+    const id = ObjectId(req.params.id); // convert to ObjectId
+    User.findOne({ _id: id })
         .then((user) => {
-            if (user.id === req.body.userId || req.body.isAdmin){
+            if (toString(user._id) === toString(id) || req.auth.isAdmin){
                 res.status(200).json(user);
             } else {
                 res.status(403).json({ message: '403: Unauthorized request'});
@@ -155,14 +171,14 @@ exports.getOneUser = (req, res, next) => {
         .catch(error => res.status(500).json({ error, message: error.message }));
 };
 
-//Suppression d'un utilisateur par l'administrateur ou par l'utilisateur
+// Modification de l'image d'un utilisateur par l'administrateur ou par l'utilisateur
 exports.deleteUserImage = (req, res, next) => {
-    User.findOne({ where: { id: req.params.id } })
+    User.findOne({ _id: req.params.id })
         .then((user) => {
-            if (user.id === req.body.userId || req.body.isAdmin) {
-                const filename = user.imageUrl.split('/images/')[1];
+            if (user._id === req.body.userId || req.auth.isAdmin) {
+                const filename = user.imageUrl('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
-                    User.updateOne({...user, imageUrl: 'https://i.postimg.cc/MHrVKYGM/default-profil-pict.jpg'}, { where: { id: req.params.id }})
+                    User.updateOne({...user, imageUrl: 'https://i.postimg.cc/MHrVKYGM/default-profil-pict.jpg'}, { id: req.params.id })
                         .then(() => res.status(201).json({ message: 'Image supprimée !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 });

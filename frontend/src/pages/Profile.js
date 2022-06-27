@@ -1,13 +1,11 @@
 import React from 'react';
-import Logo from '../components/Logo';
-import Navigation from '../components/Navigation';
+import HeaderConnected from '../components/HeaderConnected';
 
 const Profile = () => {
     return (
         <div>
             <header className='connectedHeader'>
-                <Logo />
-                <Navigation />
+                <HeaderConnected />
             </header>
             <h1>Profil d'utilisateur</h1>
         </div>

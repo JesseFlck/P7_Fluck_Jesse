@@ -1,22 +1,20 @@
 import React from 'react';
-import Logo from '../components/Logo';
-import Navigation from '../components/Navigation';
+import HeaderDisconnected from '../components/HeaderDisconnected';
 
-fetch('http://localhost:3001/api/auth/')
+/*fetch('http://localhost:3001/api/auth/')
     .then(function (res) {
         if (res.ok) {
             return res.json();
         }
-    })
+    })*/
 
 const Signup = () => {
     return (
         <div>
             <header className='disconnectedHeader'>
-                <Logo />
-                <Navigation />
+                <HeaderDisconnected />
             </header>
-            <body>
+            <div>
                 <div className='postBody'>
                     <form className='formsignup'>
                         <label>Adresse mail* :<input type="text" name="mail" /></label>
@@ -26,7 +24,7 @@ const Signup = () => {
                         <input type="submit" value="S'inscrire" className='boutonform'/>
                     </form>
                 </div>
-            </body>
+            </div>
         </div>
     );
 };

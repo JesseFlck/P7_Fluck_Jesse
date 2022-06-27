@@ -15,7 +15,7 @@ router.post ('/login', userController.login, limiter.max);
 router.get('/allusers', auth, userController.getAllUsers);
 router.get('/user/:id', auth, userController.getOneUser);
 router.put('/update/:id', auth, multer, userController.modifyUser);
-//router.put('/update/:id/image', auth, multer, userController.deleteUserImage);
+router.put('/update/:id/image', auth, multer, userController.deleteUserImage);
 router.delete('/delete/:id', auth, multer, userController.deleteUser);
 
 module.exports = router;
