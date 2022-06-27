@@ -78,15 +78,15 @@ exports.login = (req, res, next) =>{
 //Modification de l'utilisateur
 
 exports.modifyUser = (req, res, next) => {
+    const salt = bcrypt.genSaltSync(10);
+    const hashPassword = bcrypt.hashSync(password, salt); //Chiffrage du mot de passe
     if(req.file === undefined){ //Changement des données de l'utilisateur sans modification de l'image
         const ObjectId = require('mongodb').ObjectId;
         const id = ObjectId(req.params.id); // convert to ObjectId
         User.findOne({ _id: id })
             .then(user =>{
-                console.log(user._id)
-                console.log(req.auth.userId)
                 if (toString(user._id) === toString(req.auth.userId)){
-                    User.findOneAndUpdate({_id: id}, {firstName:req.body.firstName, lastName:req.body.lastName, email:req.body.email}) 
+                    User.findOneAndUpdate({_id: id}, {firstName:req.body.firstName, lastName:req.body.lastName, email:req.body.email, password:hashPassword}) 
                     //User.updateOne({ _id: id })
                     .then(() => res.status(201).json({ message: 'Utilisateur modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
@@ -97,12 +97,14 @@ exports.modifyUser = (req, res, next) => {
             .catch(error => res.status(500).json({ error, message: error.message }));        
     } else { // Modification de toutes les données de l'utilisateur
         const userImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        const ObjectId = require('mongodb').ObjectId;
+        const id = ObjectId(req.params.id); // convert to ObjectId
         User.findOne({ _id: id })
             .then((user) => { 
-                if (user._id === req.token.userId){
+                if (toString(user._id) === toString(req.auth.userId)){
                     const filename = user.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () => {
-                    User.updateOne({...user, firstName: req.body.firstName, lastName: req.body.lastName, imageUrl: userImage}, { _id: req.params.id })
+                    User.findOneAndUpdate({_id: id}, {firstName: req.body.firstName, lastName: req.body.lastName, imageUrl: userImage,email:req.body.email, password:hashPassword})
                         .then(() => res.status(201).json({ message: 'Utilisateur modifié !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                     });

@@ -9,7 +9,7 @@ exports.newPost = (req, res, next) => {
         const post = {
             title: req.body.title,
             content: req.body.content,
-            UserId: req.body.userId
+            userId: req.body.userId
         };
         Post.create(post)
             .then(() => res.status(201).json({ message: 'Post créé !' }))
@@ -34,10 +34,12 @@ exports.newPost = (req, res, next) => {
 
 exports.updatePost = (req, res, next) => {
     if (req.file === undefined) { // Sans image
-        Post.findOne({ _id: req.params.id })
+        const ObjectId = require('mongodb').ObjectId;
+        const id = ObjectId(req.params.id); // convert to ObjectId
+        Post.findOne({ _id: id })
             .then(post => {
-                if (post.UserId === req.body.userId || post.isAdmin === req.body.isAdmin ) {
-                    Post.updateOne({...post, title: req.body.title, content: req.body.content}, { id: req.params.id })
+                if (toString(post.UserId) === toString(req.body.userId) || post.isAdmin === req.auth.isAdmin ) {
+                    Post.findOneAndUpdate({_id: id}, {title: req.body.title, content: req.body.content})
                         .then(() => res.status(201).json({ message: 'Post modifié !' }))
                         .catch(error => res.status(400).json({ error, message: error.message }));
                 } else {
@@ -47,10 +49,12 @@ exports.updatePost = (req, res, next) => {
             .catch(error => res.status(500).json({ error, message: error.message }));
     } else { // Avec image
         const postImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-        Post.findOne({ _id: req.params.id })
+        const ObjectId = require('mongodb').ObjectId;
+        const id = ObjectId(req.params.id); // convert to ObjectId
+        Post.findOne({ _id: id })
         .then(post => {
-            if (post.UserId === req.body.userId || post.isAdmin === req.body.isAdmin ) {
-                Post.updateOne({...post, title: req.body.title, content: req.body.content, imageUrl: postImage}, { _id: req.params.id })
+            if (toString(post.UserId) === toString(req.body.userId) || post.isAdmin === req.body.isAdmin ) {
+                Post.findOneAndUpdate({_id: id}, {title: req.body.title, content: req.body.content, imageUrl: postImage})
                     .then(() => res.status(200).json({ message: 'Post modifié !' }))
                     .catch(error => res.status(400).json({ error, message: error.message }));
             } else {
@@ -112,3 +116,44 @@ exports.getOnePost = (req, res, next) => {
         .then(post => { res.status(200).json(post)})
         .catch(error => res.status(500).json({ error, message: error.message }));
 };
+
+
+
+
+
+// Gestion des likes
+
+exports.likePost = (req, res) => {
+    const ObjectId = require('mongodb').ObjectId;
+    const id = ObjectId(req.params.id); // convert to ObjectId
+    //Post.findOne({ _id: id })
+    console.log(req.body.likes)
+    //if (req.body.likes === 1) {
+        Post.findOne(
+            { _id: id },
+            {
+                $push: { usersLiked: req.body.userId },
+            }
+        )
+
+            .then(() => res.status(200).json({ message: '+1 like' }))
+            .catch((error) => res.status(400).json({ error }));
+    //} else {
+        // MAJ des likes déjà effectifs
+        /*Post.findOneAndUpdate({ _id: id })
+            .then((post) => {
+                if (post.likes.includes(req.body.userId)) {
+                        Post.updateOne(
+                            { _id: id },
+                            {
+                                $pull: { likes: req.body.userId },
+                                $inc: { likes: -1 },
+                            }
+                        )
+                        .then(() => res.status(200).json({ message: 'like -1' }))
+                        .catch((error) => res.status(401).json({ error }));
+                }
+            })
+            .catch((error) => res.status(403).json({ error }));*/
+    }
+//};
