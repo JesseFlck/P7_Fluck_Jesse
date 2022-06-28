@@ -1,5 +1,5 @@
-import { createElement, useEffect, useState } from 'react';
-import { timePassed } from "../utils/utils";
+import { /*createElement,*/ useEffect, useState } from 'react';
+//import { timePassed } from "../utils/utils";
 
 
 /*fetch('http://localhost:3001/api/posts')
@@ -29,23 +29,26 @@ const Posts = () => {
     //const allPosts = document.createElement('div')
     for (let post of Posts) {
         //allPosts.appendChild (
+            return(
+                document.querySelector('#post').innerHTML +=
+            `
             <article className='post'>
                   <div className='postBody'>
-                        <div className='posterImg'><img src='https://zupimages.net/up/22/23/hrn8.png' alt='profile pic'/></div>
+                        <div className='posterImg'><img src='${user.imageUrl}' alt='profile pic'/></div>
                         <div className='postInfos'>
                             <div className='postUser'>
-                                Pierre Michel
+                                ${post.userId}
                             </div>
                             <div className='postDate'>
                                 10 juin 2022, 15:04
                             </div>
                         </div>
                         <div className='postContent'>
-                            <p>{post.content}</p>
+                            <p>${post.content}</p>
                         </div>
                         <div className='postBottom'>
                             <div className='postLikes'>
-                                5 likes
+                                ${post.likes}
                             </div>
                             <div className='writeComment'>
                                 Ecrire un commentaire
@@ -59,7 +62,7 @@ const Posts = () => {
                                             James Durand
                                         </div>
                                         <div className='commentContent'>
-                                            <p>C'est super drôle ce truc haha !</p>
+                                            <p>${comment.content}</p>
                                         </div>
                                         <div className='commentDate'>
                                             10 juin 2022, 15:12
@@ -98,8 +101,8 @@ const Posts = () => {
                                 </div>
                             </div>
                   </div>          
-            </article>
-        //);
+            </article>`
+        );
 
 
 

@@ -127,7 +127,9 @@ exports.likePost = (req, res) => {
     const ObjectId = require('mongodb').ObjectId;
     const id = ObjectId(req.params.id); // convert to ObjectId
     //Post.findOne({ _id: id })
-    console.log(req.body.likes)
+    console.log(typeof req.params.likes)
+
+    const likes = req.params.likes;
     //if (req.body.likes === 1) {
         Post.findOne(
             { _id: id },
@@ -135,25 +137,26 @@ exports.likePost = (req, res) => {
                 $push: { usersLiked: req.body.userId },
             }
         )
-
+        
+        if(likes === req.body.userId){
+            Post.updateOne(
+                { _id: id },
+                {
+                    $pull: { likes: req.body.userId },
+                    $inc: { likes: -1 },
+                }
+            )
+            .then(() => res.status(200).json({ message: 'like -1' }))
+            .catch((error) => res.status(401).json({ error }));
+        }else{
+            Post.updateOne(
+                { _id: id },
+                {
+                    $inc: { likes: req.body.like++ },
+                    $push: { usersLiked: req.body.userId },
+                }
+            )
             .then(() => res.status(200).json({ message: '+1 like' }))
             .catch((error) => res.status(400).json({ error }));
-    //} else {
-        // MAJ des likes déjà effectifs
-        /*Post.findOneAndUpdate({ _id: id })
-            .then((post) => {
-                if (post.likes.includes(req.body.userId)) {
-                        Post.updateOne(
-                            { _id: id },
-                            {
-                                $pull: { likes: req.body.userId },
-                                $inc: { likes: -1 },
-                            }
-                        )
-                        .then(() => res.status(200).json({ message: 'like -1' }))
-                        .catch((error) => res.status(401).json({ error }));
-                }
-            })
-            .catch((error) => res.status(403).json({ error }));*/
+        }
     }
-//};
