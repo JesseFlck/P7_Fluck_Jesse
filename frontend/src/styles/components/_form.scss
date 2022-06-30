@@ -93,3 +93,41 @@
         }
     }
 }
+
+
+.newComment{
+    display: flex;
+    justify-content: space-between;
+
+    label {
+        width: 90%;
+        margin-right: 10px;
+
+        input[name="content"]{
+            width: 100%;
+            background-color: #ffffff;
+            min-height: 40px;
+            height: auto;
+            word-wrap: break-word;
+            color: #000000;
+            margin: 0;
+        }
+    }
+    .boutoncomm {
+        margin-top: 5px;
+        margin-bottom: 15px;
+        background-color: $couleur-secondaire;
+        border: 2px grey solid;
+        border-radius: 5px;
+        font-weight: bold;
+        padding: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        transition: background-color 300ms;
+
+        &:hover{
+            cursor: pointer;
+            background-color: #ffa8a8;
+        }
+    }
+}

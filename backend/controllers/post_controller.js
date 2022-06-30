@@ -124,39 +124,69 @@ exports.getOnePost = (req, res, next) => {
 // Gestion des likes
 
 exports.likePost = (req, res) => {
-    const ObjectId = require('mongodb').ObjectId;
-    const id = ObjectId(req.params.id); // convert to ObjectId
-    //Post.findOne({ _id: id })
-    console.log(typeof req.params.likes)
 
-    const likes = req.params.likes;
-    //if (req.body.likes === 1) {
-        Post.findOne(
-            { _id: id },
-            {
-                $push: { usersLiked: req.body.userId },
-            }
-        )
-        
-        if(likes === req.body.userId){
-            Post.updateOne(
-                { _id: id },
-                {
-                    $pull: { likes: req.body.userId },
-                    $inc: { likes: -1 },
-                }
-            )
-            .then(() => res.status(200).json({ message: 'like -1' }))
-            .catch((error) => res.status(401).json({ error }));
-        }else{
-            Post.updateOne(
-                { _id: id },
-                {
-                    $inc: { likes: req.body.like++ },
-                    $push: { usersLiked: req.body.userId },
-                }
-            )
-            .then(() => res.status(200).json({ message: '+1 like' }))
-            .catch((error) => res.status(400).json({ error }));
-        }
-    }
+
+        const ObjectId = require('mongodb').ObjectId;
+        const postId = ObjectId(req.params.id); // convert to ObjectId
+        Post.findOne({ _id: postId })
+          const id = req.params.id;
+          // Gestion des likes
+          if (req.body.like === 1) {
+              Post.updateOne(
+                  { _id: id },
+                  {
+                      $inc: { likes: req.body.like++ },
+                      $push: { usersLiked: req.body.userId },
+                  }
+              )
+  
+                  .then(() => res.status(200).json({ message: '+1 like' }))
+                  .catch((error) => res.status(400).json({ error }));
+          } /*else if (req.body.like === -1) {
+          // Gestion des dislikes
+              Post.updateOne(
+                  { _id: id },
+                  {
+                      $inc: { dislikes: req.body.like++ * -1 },
+                      $push: { usersDisliked: req.body.userId },
+                  }
+              )
+  
+                  .then(() => res.status(200).json({ message: '+1 dislike' }))
+                  .catch((error) => res.status(401).json({ error }));
+          }*/ else {
+          // MAJ des likes et dislikes déjà effectifs
+              Post.findOne({ _id: id })
+                  .then((Post) => {
+                      if (Post.usersLiked.includes(req.body.userId)) {
+                          Post.updateOne(
+                              { _id: id },
+                              {
+                                  $pull: { usersLiked: req.body.userId },
+                                  $inc: { likes: -1 },
+                              }
+                          )
+  
+                              .then(() =>
+                                  res.status(200).json({ message: 'like -1' })
+                              )
+                              .catch((error) => res.status(402).json({ error }));
+                      } /*else if (PostusersDisliked.includes(req.body.userId)) {
+                          Post.updateOne(
+                              { _id: id },
+                              {
+                                  $pull: { usersDisliked: req.body.userId },
+                                  $inc: { dislikes: -1 },
+                              }
+                          )
+                              .then(() =>
+                                  res
+                                      .status(200)
+                                      .json({ message: 'Dislike -1 !' })
+                              )
+                              .catch((error) => res.status(403).json({ error }));
+                      }*/
+                  })
+                  .catch((error) => res.status(405).json({ error }));
+          }
+      }
