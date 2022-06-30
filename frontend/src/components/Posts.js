@@ -84,7 +84,7 @@
                             </div>
                             <div className='postBottom'>
                                 <div className='postLikes'>
-                                    {post.likes}
+                                    {post.usersLiked}
                                 </div>
                                 <div className='writeComment'>
                                     Ecrire un commentaire
