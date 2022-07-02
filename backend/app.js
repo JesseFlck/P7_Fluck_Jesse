@@ -8,8 +8,6 @@ const app = express();
 
 // Connexion à la base de données
 
-// const InitDB = require('./models/init_db');
-
 mongoose
     .connect(
         'mongodb+srv://JesseFlck:azertytest@groupomania.tnort.mongodb.net/Groupomania?retryWrites=true&w=majority',

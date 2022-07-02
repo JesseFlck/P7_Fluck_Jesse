@@ -190,3 +190,11 @@ exports.deleteUserImage = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error, message: error.message }));
 };
+
+
+// Déconnexion de l'utilisateur
+
+exports.logout = async (req, res) => {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.redirect('/connexion');
+  }

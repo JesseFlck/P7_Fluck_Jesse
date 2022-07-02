@@ -8,10 +8,10 @@ const HeaderDisconnected = () => {
                 <img src="./images/logo.png" alt="Logo Groupomania" />
             </div>
             <div className='navigation'>
-                <NavLink exact to="/inscription" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
+                <NavLink to="/inscription" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
                     Créer un compte
                 </NavLink>
-                <NavLink exact to="/connexion" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
+                <NavLink to="/connexion" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
                     Se connecter
                 </NavLink>
             </div>

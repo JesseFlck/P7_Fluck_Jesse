@@ -1,7 +1,7 @@
 import React from 'react';
 import HeaderConnected from '../components/HeaderConnected';
 import CreatePost from '../components/CreatePost';
-import Posts from '../components/Posts';
+import Post from '../components/Post';
 
 
 const Home = () => {
@@ -15,7 +15,7 @@ const Home = () => {
                 <div className='createpost'>
                     <CreatePost />
                 </div>
-                <Posts />
+                <Post />
             </div>
         </div>
     );

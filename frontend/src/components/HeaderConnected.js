@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Logout from './Logout';
 
 const HeaderConnected = () => {
     /*const logoutUser = () => dispatch => {
@@ -18,14 +19,14 @@ const HeaderConnected = () => {
                 <img src="./images/logo.png" alt="Logo Groupomania" />
             </div>
             <div className='navigation'>
-                <NavLink exact to="/" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}> 
+                <NavLink to="/" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}> 
                     Accueil
                 </NavLink>
-                <NavLink exact to="/profil" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
+                <NavLink to="/profil" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
                     Mon profil
                 </NavLink>
-                <NavLink exact to="/inscription" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
-                    Se déconnecter
+                <NavLink to="/connexion" className={({ isActive }) => "nav-link" + (isActive ? " activated" : "")}>
+                    <Logout />
                 </NavLink>
             </div>
         </div>
