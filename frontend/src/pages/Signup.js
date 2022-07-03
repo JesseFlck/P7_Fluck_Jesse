@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 const passwordValidator = require('password-validator');
 
 const Signup = () => {
-    const [firstName, setFirstname] = useState('');
-    const [lastName, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -89,10 +89,10 @@ const Signup = () => {
             <div>
                 <div className='postBody'>
                     <form action="" onSubmit={handleRegister} className='formsignup'>
-                        <label htmlFor='firstName'>Prénom* :<input type="text" name="firstName" id="firstName" onChange={(e) => setFirstname(e.target.value)} value={firstName} /></label>
+                        <label htmlFor='firstName'>Prénom* :<input type="text" name="firstName" id="firstName" onChange={(e) => setFirstName(e.target.value)} value={firstName} /></label>
                         <div className='firstName error'></div>
                         <br />
-                        <label htmlFor='lastName'>Nom* :<input type="text" name="lastName" id="lastName" onChange={(e) => setName(e.target.value)} value={lastName} /></label>
+                        <label htmlFor='lastName'>Nom* :<input type="text" name="lastName" id="lastName" onChange={(e) => setLastName(e.target.value)} value={lastName} /></label>
                         <div className='lastName error'></div>
                         <br />
                         <label htmlFor='email'>Adresse mail* :<input type="text" name="email" id="email" onChange={(e) => setEmail(e.target.value)} value={email} /></label>

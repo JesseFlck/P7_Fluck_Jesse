@@ -8,6 +8,7 @@ const Logout = () => {
             cookie.remove(key, { expires: 1 });
         }
     }
+    
     const logout = async () => {
         await axios({
             method: 'get',

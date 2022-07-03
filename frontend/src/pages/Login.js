@@ -1,55 +1,34 @@
 import HeaderDisconnected from '../components/HeaderDisconnected';
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    let data = {
+      email,
+      password,
+    };
+    axios
+      .post('http://localhost:3001/api/auth/login', data)
+      .then((response) => {
+        localStorage.setItem('token', JSON.stringify(response.data));
+        navigate('/');
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    const handleLogin = (e) => { 
-        e.preventDefault();
-        const emailPasswordError = document.querySelector('.password.error');
-
-        const data = {
-            email,
-            password  
-        };
-
-        const promise = {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        }
-
-        fetch(`http://localhost:3001/api/auth/login`, promise)
-
-            .then((res) => {
-                console.log(res)
-                    window.location = "/";
-                
-            })
-
-            .catch((err) => {
-
-                if (err.message.includes("Request failed with status code 400")) {
-                    emailPasswordError.innerHTML = "mot de passe incorrect";
-
-                }
-
-                if (err.message.includes("Request failed with status code 429")) {
-                    emailPasswordError.innerHTML = "trop de tentatives de connexion, compte bloqué pour 5 minutes";
-                }
-            })
-
-    }
-
-    return (
-
-        <div>
-            <header className='disconnectedHeader'>
-                <HeaderDisconnected />
-            </header>
+  return (
+    <div>
+      <header className="disconnectedHeader">
+        <HeaderDisconnected />
+      </header>
             <div>
                 <div className='postBody'>
                     <form action="" onSubmit={handleLogin} className='formlogin'>

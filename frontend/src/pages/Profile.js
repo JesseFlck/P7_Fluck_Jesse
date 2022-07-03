@@ -1,5 +1,6 @@
 import React from 'react';
 import HeaderConnected from '../components/HeaderConnected';
+import Profil from '../components/Profile'
 
 const Profile = () => {
     return (
@@ -8,6 +9,7 @@ const Profile = () => {
                 <HeaderConnected />
             </header>
             <h1>Profil d'utilisateur</h1>
+            <Profil />
         </div>
     );
 };
