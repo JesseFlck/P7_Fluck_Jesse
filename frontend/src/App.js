@@ -1,18 +1,9 @@
-//import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Signup from './pages/Signup';
-
-/*fetch('http://localhost:3001/')
-    .then(function (res) {
-        if (res.ok) {
-            return res.json();
-        }
-        //console.log(res.json)
-    })*/
 
 
 const App = () => {

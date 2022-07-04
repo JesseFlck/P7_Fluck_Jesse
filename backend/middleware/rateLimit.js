@@ -7,4 +7,6 @@ const max = rateLimit({
   max: 5, // nombre de tentatives autorisées
 });
 
-module.exports = {max};
+module.exports = {
+  max
+};
