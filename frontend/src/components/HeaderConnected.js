@@ -2,17 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Logout from './Logout';
 
-const HeaderConnected = () => {
-    /*const logoutUser = () => dispatch => {
-        localStorage.removeItem("jwtToken");
-        setAuthToken(false);
-        dispatch(setCurrentUser({}));
-    }
-    
-    const Sidebar = ({auth: {isAuthenticated},logoutUser}) => {
-}*/
-
-    
+const HeaderConnected = () => {    
     return (
         <div className="connectedHeader">
             <div className='logo'>

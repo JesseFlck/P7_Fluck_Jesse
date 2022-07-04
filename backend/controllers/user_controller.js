@@ -164,11 +164,11 @@ exports.getOneUser = (req, res, next) => {
     const id = ObjectId(req.params.id); // convert to ObjectId
     User.findOne({ _id: id })
         .then((user) => {
-            if (toString(user._id) === toString(id) || req.auth.isAdmin){
+            /*if (toString(user._id) === toString(id) || req.auth.isAdmin){*/
                 res.status(200).json(user);
-            } else {
+            /*} else {
                 res.status(403).json({ message: '403: Unauthorized request'});
-            }
+            }*/
         })
         .catch(error => res.status(500).json({ error, message: error.message }));
 };

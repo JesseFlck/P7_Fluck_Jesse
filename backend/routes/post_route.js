@@ -8,7 +8,7 @@ const postController = require('../controllers/post_controller');
 
 // Mise en place des routes
 
-router.get('/', postController.getAllPosts);
+router.get('/', auth, postController.getAllPosts);
 router.get('/:id', auth, postController.getOnePost);
 router.post('/new', multer, auth, postController.newPost);
 router.put('/:id',auth, multer, postController.updatePost);

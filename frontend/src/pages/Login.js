@@ -15,7 +15,7 @@ const Login = () => {
     axios
       .post('http://localhost:3001/api/auth/login', data)
       .then((response) => {
-        localStorage.setItem('token', JSON.stringify(response.data));
+        localStorage.setItem('userData', JSON.stringify(response.data));
         navigate('/');
         window.location.reload();
       })

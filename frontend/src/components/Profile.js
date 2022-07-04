@@ -4,7 +4,6 @@
 //import { createElement, useEffect, useState } from 'react';
 //import { timePassed } from "../utils/utils";
 
-//import { all } from "../../../backend/app";
 
 
 /*fetch('http://localhost:3001/api/auth')
@@ -68,31 +67,51 @@
         
         export default Profil;*/
 
-        import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React/*, {useState, useEffect}*/ from 'react';
+//import axios from 'axios';
 
 function Profile(){
-	const api = 'http://localhost:3001/api/auth';
-	const [user, setUser] = useState();
 
+    const storage = JSON.parse(localStorage.getItem(
+        'isAdmin',
+        'token',
+        'userId'
+    ))
+
+    fetch('http://localhost:3001/api/auth/:id')
+    .then(function (res) {
+        if (res.ok) {
+            return res.json();
+        }
+        console.log(res.json.data)
+    })
+
+    
+	/*const api = 'http://localhost:3001/api/auth/user/:id';
+	const [user, setUser] = useState();
+    
 	useEffect(() => {
 		axios.get(api)
 			.then(res => {
 				setUser(res.data)
 		})
-	}, [api])
+	}, [api])*/
 
-	if(user){
+
+    //console.log(storage)
+    
+
+	/*if(user){*/
 		return (
 			<div>
-				<h1>{user.firstName}</h1>
+				<h1>{storage.userId}</h1>
 			</div>
 		)
-	}
+	/*}
 
 	return (
 		<div></div>
-	)
+	)*/
 	
 }
 
