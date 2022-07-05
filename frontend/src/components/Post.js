@@ -37,7 +37,6 @@ const post = fetch(
                         }
                     }).then(function(dataCommentsUsers) {
                         for (let dataUser of dataCommentsUsers) {
-                            console.log(dataUser)
                             const userComment = fetch(
                                 `http://localhost:3001/api/auth/user/${dataUser.UserId}`, init
                                 ).then(function (res) {
@@ -64,7 +63,7 @@ const post = fetch(
                     <div className='posterImg'><img src='{user.imageUrl}' alt='profile pic'/></div>
                     <div className='postInfos'>
                         <div className='postUser'>
-                            {user.firstName} {user.lastName}
+                            {user.firstName} + ' ' + {user.lastName}
                         </div>
                         <div className='postDate'>
                             10 juin 2022, 15:04
@@ -96,7 +95,7 @@ const post = fetch(
                                         James Durand
                                     </div>
                                     <div className='commentContent'>
-                                        <p>un truc</p>
+                                        <p>blabla</p>
                                     </div>
                                     <div className='commentDate'>
                                         10 juin 2022, 15:12
