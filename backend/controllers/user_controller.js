@@ -259,13 +259,13 @@ exports.getAllUsers = (req, res, next) => {
             ],
         })
         .then((user) => {
-            if (user._id === req.body.userId || req.body.isAdmin) {
+            /*if (user._id === req.body.userId || req.body.isAdmin) {*/
                 res.status(200).json(user);
-            } else {
+            /*} else {
                 res.status(403).json({
                     message: '403: Unauthorized request'
                 });
-            }
+            }*/
         })
         .catch(error => res.status(500).json({
             error,

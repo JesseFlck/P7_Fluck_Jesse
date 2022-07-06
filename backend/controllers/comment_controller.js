@@ -1,5 +1,4 @@
 const Comment = require('../models/comment_model');
-const Post = require('../models/post_model');
 const User = require('../models/user_model');
 const fs = require('fs');
 const {
