@@ -1,9 +1,7 @@
 const Comment = require('../models/comment_model');
 const User = require('../models/user_model');
 const fs = require('fs');
-const {
-    post
-} = require('../routes/post_route');
+const { post } = require('../routes/post_route');
 
 
 // Création d'un commmentaire

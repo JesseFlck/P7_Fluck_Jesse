@@ -105,10 +105,10 @@ exports.login = (req, res, next) => {
             }
             res.status(200).json({
                 userId: user._id,
-                isAdmin: user.isAdmin,
+                //isAdmin: user.isAdmin,
                 token: jwt.sign({
                     userId: user._id,
-                    isAdmin: user.isAdmin
+                    //isAdmin: user.isAdmin
                 }, 'RANDOM_TOKEN_SECRET', {
                     expiresIn: '24h'
                 }) //Generation du token d'authentification

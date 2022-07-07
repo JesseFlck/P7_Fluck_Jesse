@@ -1,3 +1,4 @@
+import {timePassed} from '../utils/utils'
 const userData = localStorage.getItem('userData')
 const parseToken = JSON.parse(userData)
 
@@ -8,11 +9,11 @@ const init = {
         'Authorization': parseToken.token
     }
 }
-    
-    
+
+
 const post = fetch(
    `http://localhost:3001/api/posts`, init
-    ).then(function (res) {
+   ).then(function (res) {
         if (res.ok) {
             return res.json();
         }
@@ -44,36 +45,54 @@ const post = fetch(
                                         return res.json();
                                     }
                                 }).then(function (commentUserId){
-                                    Posts(data, commentUserId)
+                                    //Posts(data, commentUserId)
                                 })
                             }
-                    })
-        }
-    })
-            
+                            //console.log(dataCommentsUsers)
+                        })
+                    }
+                })
+                
                 
                 
     const Posts = (post, user, comment) => {
+                
+        const elements = {
+            postId : post._id,
+            postTitle : post.title,
+            postContent : post.content,
+            postDate : timePassed,
+            author : user.firstName + ' ' + user.lastName,
+            authorPic : user.imageUrl,
+            //commentContent : comment.content,
+        }
+        console.log(elements)
+
+
         //console.log(post)
         //console.log(user)
         //console.log(comment)
+
+        //for (let element of elements){
         return(
+            /*document.querySelector('#post').innerHTML +=
+                    `*/
             <article className='post'>
                 <div className='postBody'>
-                    <div className='posterImg'><img src='{user.imageUrl}' alt='profile pic'/></div>
+                    <div className='posterImg'><img src={elements.authorPic} alt='profile pic'/></div>
                     <div className='postInfos'>
                         <div className='postUser'>
-                            {user.firstName} + ' ' + {user.lastName}
+                            {elements.author}
                         </div>
                         <div className='postDate'>
-                            10 juin 2022, 15:04
+                            postDate
                         </div>
                     </div>
                     <div className='postTitle'>
-                        <h2>{post.title}</h2>
+                        <h2>{elements.postTitle}</h2>
                     </div>
                     <div className='postContent'>
-                        <p>{post.content}</p>
+                        {elements.postContent}
                     </div>
                     <div className='postBottom'>
                         <div className='postLikes'>
@@ -95,7 +114,7 @@ const post = fetch(
                                         James Durand
                                     </div>
                                     <div className='commentContent'>
-                                        <p>blabla</p>
+                                        <p>elements.commentContent</p>
                                     </div>
                                     <div className='commentDate'>
                                         10 juin 2022, 15:12
@@ -134,8 +153,9 @@ const post = fetch(
                             </div>
                         </div>
                 </div>          
-            </article>
+            </article>//`
         )
+        //}
 }
                 
 export default Posts;

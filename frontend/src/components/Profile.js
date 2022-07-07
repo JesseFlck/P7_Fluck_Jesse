@@ -67,12 +67,12 @@
         
         export default Profil;*/
 
-import React/*, {useState, useEffect}*/ from 'react';
+//import React, {useState, useEffect} from 'react';
 //import axios from 'axios';
 
 function Profile(){
 
-    const storage = JSON.parse(localStorage.getItem(
+    /*const storage = JSON.parse(localStorage.getItem(
         'isAdmin',
         'token',
         'userId'
@@ -102,7 +102,7 @@ function Profile(){
     
 
 	/*if(user){*/
-		return (
+		/*return (
 			<div>
 				<h1>{storage.userId}</h1>
 			</div>
@@ -114,5 +114,4 @@ function Profile(){
 	)*/
 	
 }
-
 export default Profile;

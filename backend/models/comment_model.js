@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 
 // Modèle des commentaires
 
-const Comment = ('Comment', {
+const Comment = mongoose.Schema ({
     content: {type: String, required: true},
     UserId: {type: String, required: true},
     PostId: {type: String, required: true}
