@@ -77,7 +77,7 @@ const post = fetch(
         return(
             /*document.querySelector('#post').innerHTML +=
                     `*/
-            <article className='post'>
+            <article key={elements.postId} className='post'>
                 <div className='postBody'>
                     <div className='posterImg'><img src={elements.authorPic} alt='profile pic'/></div>
                     <div className='postInfos'>
