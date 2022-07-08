@@ -5,23 +5,28 @@ import axios from 'axios';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const handleLogin = (e) => {
     e.preventDefault();
-    let data = {
+    /*let data = {
       email,
       password,
-    };
-    axios
-      .post('http://localhost:3001/api/auth/login', data)
-      .then((response) => {
-        localStorage.setItem('userData', JSON.stringify(response.data));
-        navigate('/');
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    };*/
+    axios({
+      method: "POST",
+      url: 'http://localhost:3001/api/auth/login',
+      data: {
+        email: email,
+        password: password,
+      },
+    })
+    .then((res) => {
+      localStorage.token = JSON.stringify(res.data);
+      window.location.href = "/";
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   };
 
   return (

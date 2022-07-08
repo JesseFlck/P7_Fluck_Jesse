@@ -1,6 +1,6 @@
 import {timePassed} from '../utils/utils'
-const userData = localStorage.getItem('userData')
-const parseToken = JSON.parse(userData)
+const token = localStorage.getItem('token')
+const parseToken = JSON.parse(token)
 
 const init = {
     method: 'GET',
@@ -11,7 +11,7 @@ const init = {
 }
 
 
-const post = fetch(
+const card = fetch(
    `http://localhost:3001/api/posts`, init
    ).then(function (res) {
         if (res.ok) {
@@ -45,22 +45,26 @@ const post = fetch(
                                         return res.json();
                                     }
                                 }).then(function (commentUserId){
-                                    //Posts(data, commentUserId)
+                                    Posts(data, commentUserId)
+                                    return (
+                                        {commentUserId}
+                                    )
                                 })
                             }
                             //console.log(dataCommentsUsers)
                         })
                     }
                 })
+
+                console.log(card)
                 
                 
-                
-    const Posts = (post, user, comment) => {
+    const Posts = (card, user, comment) => {
                 
         const elements = {
-            postId : post._id,
-            postTitle : post.title,
-            postContent : post.content,
+            postId : card._id,
+            postTitle : card.title,
+            postContent : card.content,
             postDate : timePassed,
             author : user.firstName + ' ' + user.lastName,
             authorPic : user.imageUrl,
