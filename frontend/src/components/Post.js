@@ -1,165 +1,184 @@
-import {timePassed} from '../utils/utils'
-const token = localStorage.getItem('token')
-const parseToken = JSON.parse(token)
+import { useState, useEffect } from "react";
+import axios from "axios"
+import { Link } from "react-router-dom"
+import dateFormat from "dateformat"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom'
+import { useForm } from "react-hook-form"
+import '../styles/index.scss'
 
-const init = {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': parseToken.token
+
+// Affiche l'ensemble des posts, la possibilité d'ajouter ou retirer un like
+// et si l'utilisateur possède les droits, la modification ou la suppression d'un post
+const Post = () => {
+    const navigate = useNavigate();
+    const { register, handleSubmit } = useForm()
+    const [error, setError] = useState()
+
+
+
+    const [post, setPost] = useState([]);
+    const [user, setUser] = useState({});
+    const [comment, setComment] = useState({})
+
+    // Récupération de tous les posts
+    function getposts() {
+        axios.get("http://localhost:3001/api/posts/")
+            .then(({ data }) => {
+                setPost(data)
+            })
     }
+
+    // modification d'un post
+    const updatePost = (postid) => {
+        axios.put("http://localhost:3001/api/posts/" + postid)
+            .then(() =>
+                navigate("/modifierpost")
+            )
+    }
+
+    // Mise en place de la suppression des posts
+    const deletePost = (postid) => {
+        axios.delete("http://localhost:3001/api/posts/" + postid)
+            .then(() =>
+                getposts())
+    }
+
+    // Gestion des likes d'un post
+    
+    const liked = (postid) => {
+        axios.post(`http://localhost:3001/api/posts/${postid}/like/`)
+            .then(() => {
+                getposts()
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+
+    // Mise en place de la modification des commentaires
+    const editComment = (commentid) => {
+        axios.put('http://localhost:3001/api/comment/update/' + commentid)
+            .then(() =>
+                getposts())
+    }
+
+    // Mise en place de la suppression des commentaires
+    const deleteComment = (commentid) => {
+        axios.delete("http://localhost:3001/api/comment/delete/" + commentid)
+            .then(() =>
+                getposts())
+    }
+
+
+    useEffect(() => {
+        if (!window.localStorage.token) {
+            navigate('/')
+        }
+        getposts();
+
+        // Récupération des informations de l'utilisateur
+        axios.get("http://localhost:3001/api/auth/allusers/")
+            .then(({ data }) => {
+                setUser(data)
+            })
+
+
+        const getComm = (postid) => {
+            axios.get("http://localhost:3001/api/comment/" + postid)
+            .then(({ data }) => {
+                setComment(data)
+            })
+        }
+        }, [])
+
+        const onSubmit = (data) => {
+            const formdata = new FormData()
+            //formdata.append('userId', parseToken.id);
+            formdata.append("content", data.content)
+            axios.post("http://localhost:3001/api/comment/reply", formdata)
+                .then((res) => {
+                    navigate("/");
+                })
+                .catch((error) => {
+                    setError(error.response.data.error)
+                })
+            }
+        
+
+    return (
+        <>
+            <div className="post">
+                {post.map(element => {
+                    const date = dateFormat(element.date, "dd/mm/yyyy") + ' à ' + dateFormat(element.date, "HH:MM");
+                    const like = <FontAwesomeIcon icon={faThumbsUp} />
+                    const del = <FontAwesomeIcon icon={faTrash} />
+                    const edit = <FontAwesomeIcon icon={faEdit} />
+                    return (
+                        <div className="postBody" key={`post-${element._id}`}>
+                            <div className='posterImg'>
+                                <img src="https://zupimages.net/up/22/22/e3uh.jpg" alt='profile pic'/>
+                            </div>
+                            <div className="icons">
+                                <span className="centerIcon">
+                                    <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>
+                                </span>
+                                <span className="centerIcon">
+                                    <div className="iconDelete" onClick={() => deletePost(element._id)}>{del}</div>
+                                </span>
+                            </div>
+                            <div className="postInfos">
+                                <div className='postUser'>{element.userId}</div>
+                                <div className='postDate'>{date}</div>
+                            </div>
+                            <div className='postTitle'>
+                                {element.title ? <h2>{element.title}</h2> : null}
+                            </div>
+                            <div className='postContent'>
+                                {element.content}
+                            </div>
+                            {element.urlImage ? <div>
+                                <img src={element.imageUrl} alt="" />
+                            </div> : null}
+                                <div className="like" onClick={() => liked(element._id)}>{like} {element.usersLiked.length}</div>
+                            <div className='postComments'>
+                                
+                                <form onSubmit={handleSubmit(onSubmit)} className="newComment">
+                                    <label><input {...register('content')} type="text" name="content" placeholder="Ecrire un commentaire"/></label>
+                                    <input type="submit" value="Envoyer" className='boutoncomm'/>
+                                </form>
+                                <div className='commentBloc'>
+                                <div className="icons">
+                                    <span className="centerIcon">
+                                        <div className="iconUpdate" onClick={() => editComment(comment._id)}>{edit}</div>
+                                    </span>
+                                    <span className="centerIcon">
+                                        <div className="iconDelete" onClick={() => deleteComment(comment._id)}>{del}</div>
+                                    </span>
+                                </div>
+                                    <div className='userImg'><img src='https://zupimages.net/up/20/52/sf2z.png' alt='profile pic'/></div>
+                                    <div className='commentCorpse'>
+                                        <div className='commentUser'>
+                                            James Durand
+                                        </div>
+                                        <div className='commentContent'>
+                                            <p>{comment.content}</p>
+                                        </div>
+                                        <div className='commentDate'>
+                                            10 juin 2022, 15:12
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </>
+    )
+
 }
 
-
-const card = fetch(
-   `http://localhost:3001/api/posts`, init
-   ).then(function (res) {
-        if (res.ok) {
-            return res.json();
-        }
-    }
-    ).then(function(dataPosts) {
-        for (let data of dataPosts) {
-            const user = fetch(
-                `http://localhost:3001/api/auth/user/${data.userId}`, init
-                ).then(function (res) {
-                    if (res.ok) {
-                        return res.json();
-                    }
-                })
-                .then(function(dataUsers) {
-                    Posts(data, dataUsers)
-                })
-                const comment = fetch(
-                    `http://localhost:3001/api/comment/${data._id}`, init
-                    ).then(function (res) {
-                        if (res.ok) {
-                            return res.json();
-                        }
-                    }).then(function(dataCommentsUsers) {
-                        for (let dataUser of dataCommentsUsers) {
-                            const userComment = fetch(
-                                `http://localhost:3001/api/auth/user/${dataUser.UserId}`, init
-                                ).then(function (res) {
-                                    if (res.ok) {
-                                        return res.json();
-                                    }
-                                }).then(function (commentUserId){
-                                    Posts(data, commentUserId)
-                                    return (
-                                        {commentUserId}
-                                    )
-                                })
-                            }
-                            //console.log(dataCommentsUsers)
-                        })
-                    }
-                })
-
-                console.log(card)
-                
-                
-    const Posts = (card, user, comment) => {
-                
-        const elements = {
-            postId : card._id,
-            postTitle : card.title,
-            postContent : card.content,
-            postDate : timePassed,
-            author : user.firstName + ' ' + user.lastName,
-            authorPic : user.imageUrl,
-            //commentContent : comment.content,
-        }
-        console.log(elements)
-
-
-        //console.log(post)
-        //console.log(user)
-        //console.log(comment)
-
-        //for (let element of elements){
-        return(
-            /*document.querySelector('#post').innerHTML +=
-                    `*/
-            <article key={elements.postId} className='post'>
-                <div className='postBody'>
-                    <div className='posterImg'><img src={elements.authorPic} alt='profile pic'/></div>
-                    <div className='postInfos'>
-                        <div className='postUser'>
-                            {elements.author}
-                        </div>
-                        <div className='postDate'>
-                            postDate
-                        </div>
-                    </div>
-                    <div className='postTitle'>
-                        <h2>{elements.postTitle}</h2>
-                    </div>
-                    <div className='postContent'>
-                        {elements.postContent}
-                    </div>
-                    <div className='postBottom'>
-                        <div className='postLikes'>
-                            3likes
-                        </div>
-                        <div className='writeComment'>
-                            Ecrire un commentaire
-                        </div>
-                    </div>
-                        <div className='postComments'>
-                            <div className="newComment">
-                                <label><input type="text" name="content" placeholder="Ecrire un commentaire"/></label>
-                                <input type="submit" value="Envoyer" className='boutoncomm'/>
-                            </div>
-                            <div className='commentBloc'>
-                                <div className='userImg'><img src='https://zupimages.net/up/20/52/sf2z.png' alt='profile pic'/></div>
-                                <div className='commentCorpse'>
-                                    <div className='commentUser'>
-                                        James Durand
-                                    </div>
-                                    <div className='commentContent'>
-                                        <p>elements.commentContent</p>
-                                    </div>
-                                    <div className='commentDate'>
-                                        10 juin 2022, 15:12
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='commentBloc'>
-                                <div className='userImg'><img src='https://zupimages.net/up/21/52/cvpi.png' alt='profile pic'/></div>
-                                <div className='commentCorpse'>
-                                    <div className='commentUser'>
-                                        Louis Conrad
-                                    </div>
-                                    <div className='commentContent'>
-                                        <p>Ah je l'avais déjà vu, ça me fait toujours autant rire !</p>
-                                    </div>
-                                    <div className='commentDate'>
-                                        10 juin 2022, 15:15
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='commentBloc'>
-                                <div className='userImg'><img src='https://zupimages.net/up/21/16/6f9o.png' alt='profile pic'/></div>
-                                <div className='commentCorpse'>
-                                    <div className='commentUser'>
-                                        Ginette Beauchamp
-                                    </div>
-                                    <div className='commentContent'>
-                                        <p>Amet officia nulla voluptate consectetur nulla ut. Deserunt reprehenderit laborum consectetur Lorem mollit aliquip aliqua consectetur officia adipisicing id ipsum labore deserunt. Qui incididunt adipisicing commodo nisi ea minim ipsum occaecat. Ullamco magna cillum ipsum irure non amet aliquip. In anim qui aliquip ullamco et ullamco reprehenderit officia sint elit proident ex qui. Veniam reprehenderit exercitation nostrud aliquip officia elit cillum. Et consequat incididunt ullamco nostrud eiusmod adipisicing laboris fugiat sit elit dolor sint sint.</p>
-                                        <br />
-                                        <p>Amet nisi officia sit excepteur occaecat magna sint. Esse aliquip qui cupidatat dolor dolor fugiat quis culpa non. Consequat aute velit fugiat eu enim cupidatat tempor voluptate magna id. Consequat cupidatat ullamco cupidatat culpa aliqua consequat sit tempor incididunt do aliquip ullamco velit. Et elit laborum pariatur id elit irure fugiat ipsum occaecat. In laboris nostrud adipisicing nisi. Ullamco nulla ut duis duis.</p>
-                                    </div>
-                                    <div className='commentDate'>
-                                        10 juin 2022, 15:12
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </div>          
-            </article>//`
-        )
-        //}
-}
-                
-export default Posts;
+export default Post;

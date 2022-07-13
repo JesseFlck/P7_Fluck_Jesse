@@ -1,117 +1,68 @@
-/*import React from 'react';
+import { useState, useEffect } from "react";
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen, faUserSlash } from "@fortawesome/free-solid-svg-icons";
+import "../styles/index.scss"
+const token = localStorage.getItem('token');
+const parseToken = JSON.parse(token);
 
 
-//import { createElement, useEffect, useState } from 'react';
-//import { timePassed } from "../utils/utils";
 
 
 
-/*fetch('http://localhost:3001/api/auth')
-    .then(function (res) {
-        if (res.ok) {
-            return res.json();
-        }
-        console.log(res.json.data)
-    })
+// Affiche les informations d'un utlisateur et permet la suppression du compte
+const Profil = () => {
 
+    const [user, setUser] = useState({});
 
-     const init = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        }
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId)
+            .then(({ data }) => {
+                setUser(data)
+            })
+    }, [])
+
+    const editUser = () => {
+                navigate("/modifierprofil")
     }
-    
-    const user = fetch(
-        `http://localhost:3001/api/auth`, init
-        ).then(function (res) {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-                
-                // do fetch requests in parallel
-                // using the Promise.all() method
-                const allData = Promise.all([user]);
-                
-                // attach then() handler to the allData Promise
-                allData.then((res) => console.log(res));
 
-                
-                
-                
-                const Profil = () => {
-                    return(
-                    <article className='profile'>
-                          <div className='headerProfile'>
-                                <div className='userImg'><img src='{user.imageUrl}' alt='profile pic'/></div>
-                                <div className='userName'>
-                                        jeanmich
-                                </div>
-                                <div className='profileCorpse'>
-                                    <p>blabla</p>
-                                </div>
-                                <div className='footerProfile'>
-                                    <div className='postsNumbers'>
-                                        5 posts
-                                    </div>
-                                    <div className='commNumbers'>
-                                        13 commentaires
-                                    </div>
-                                </div>
-                                    
-                          </div>          
-                    </article>//`
-                );
-            }
-        
-        export default Profil;*/
+    const deleteUser = () => {
+        axios.delete("http://localhost:3001/api/auth/delete/" + parseToken.userId)
+            .then(() =>
+                alert('Votre compte a bien été supprimé !'),
+                navigate("/connexion")
+            )
+    }
 
-//import React, {useState, useEffect} from 'react';
-//import axios from 'axios';
-
-function Profile(){
-
-    /*const storage = JSON.parse(localStorage.getItem(
-        'isAdmin',
-        'token',
-        'userId'
-    ))
-
-    fetch('http://localhost:3001/api/auth/:id')
-    .then(function (res) {
-        if (res.ok) {
-            return res.json();
-        }
-        console.log(res.json.data)
-    })
-
-    
-	/*const api = 'http://localhost:3001/api/auth/user/:id';
-	const [user, setUser] = useState();
-    
-	useEffect(() => {
-		axios.get(api)
-			.then(res => {
-				setUser(res.data)
-		})
-	}, [api])*/
+    const iconDeleteUser = <FontAwesomeIcon icon={faUserSlash} />
+    const iconEditUser = <FontAwesomeIcon icon={faPen} />
 
 
-    //console.log(storage)
-    
+    return (
+        <>
+            <div className="profile">
+                <div className="userPic">
+                    <img src={user.imageUrl} alt='profile pic'/>
+                </div>
+                <p><u>Prénom :</u> {user.firstName}</p>
+                <p><u>Nom :</u> {user.lastName}</p>
+                <p><u>Email :</u> {user.email} </p>
+            </div>
+            <div className="profileOptions">
+                <span className="centerIcon">
+                    <div className="iconEdit" onClick={() => editUser()}>{iconEditUser} Modifier mes informations</div>
+                </span>
+                <span className="centerIcon">
+                    <div className="iconDelete" onClick={() => deleteUser()}>{iconDeleteUser} Supprimer mon compte</div>
+                </span>
+            </div>
+        </>
+    )
 
-	/*if(user){*/
-		/*return (
-			<div>
-				<h1>{storage.userId}</h1>
-			</div>
-		)
-	/*}
 
-	return (
-		<div></div>
-	)*/
-	
 }
-export default Profile;
+
+export default Profil;

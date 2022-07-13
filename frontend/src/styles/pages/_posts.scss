@@ -9,13 +9,26 @@
     background-color: #ffffff;
     color: #000000;
     padding: 15px;
-    margin-top: 50px;
+    margin-top: 70px;
     margin-bottom: 30px;
     position: relative;
+
+    .icons {
+        display: flex;
+        justify-content: right;
+
+        .centerIcon {
+            padding-left: 20px;
+            padding-bottom: 10px;
+            :hover{
+                cursor: pointer;
+            }
+        }
+    }
     
     .posterImg > img {
-            max-height: 100px;
-            max-width: 100px;
+            height: 100px;
+            width: 100px;
             border-radius: 50%;
             position: absolute;
             top: -45px;
@@ -42,6 +55,16 @@
         padding-bottom: 30px;
     }
 
+    .like {
+        padding-left: 10px;
+        padding-bottom: 10px;
+
+        :hover{
+            cursor: pointer;
+        }
+        }
+    }
+
     .postBottom {
         display: flex;
         justify-content: space-around;
@@ -57,6 +80,12 @@
         color: black;
         border-radius: 8px;
         display: flex;
+        position: relative;
+    
+        .icons{
+            position: absolute;
+            right: 10px;
+        }
 
         .userImg > img {
             max-height: 100px;
@@ -78,6 +107,60 @@
 
         .commentDate {
             font-size: 10px;
+        }
+    }
+
+
+
+.editpost{
+    max-width: 70%;
+    margin: auto;
+    text-align: justify;
+    //border: 2px $couleur-tertiaire solid;
+    box-shadow: 3px 3px 5px $couleur-tertiaire;
+    border-radius: 15px;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 15px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    position: relative;
+
+    label{
+        display: flex;
+        flex-direction: column;
+        input{
+            width: 85%;
+            margin: auto;
+        }
+
+        textarea{
+            width: 85%;
+            min-height: 200px;
+            margin: auto;
+        }
+    }
+
+    .btneditpost{
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+
+        .boutonform {
+            margin: auto;
+            background-color: $couleur-secondaire;
+            border: 2px grey solid;
+            border-radius: 5px;
+            font-weight: bold;
+            padding: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+            transition: background-color 300ms;
+
+            &:hover{
+                cursor: pointer;
+                background-color: #ffa8a8;
+            }
         }
     }
 }

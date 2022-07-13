@@ -3,7 +3,7 @@
 }
 
 
-.formsignup, .formlogin {
+.formsignup, .formlogin, .formuseredit {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -51,6 +51,16 @@
     padding-bottom: 30px;
 }
 
+.posterImg > img {
+    max-height: 100px;
+    max-width: 100px;
+    border-radius: 50%;
+    position: absolute;
+    top: -45px;
+    left: -45px;
+    border: 3px $couleur-secondaire solid;
+}
+
 .formpost {
     display: flex;
     flex-direction: column;
@@ -65,8 +75,8 @@
             background-color: #ffffff;
         }
     
-        input[name="content"]{
-            max-width: 100%;
+        textarea{
+            width: 100%;
             min-height: 200px;
             height: auto;
             word-wrap: break-word;

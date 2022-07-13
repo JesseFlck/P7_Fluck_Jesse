@@ -45,3 +45,15 @@ h1 {
     padding-bottom: 50px;
     font-size: 30px;
 }
+
+img { 
+    object-fit:cover;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    background-color: $couleur-tertiaire;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: $couleur-secondaire;
+  }

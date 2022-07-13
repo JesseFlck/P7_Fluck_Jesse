@@ -7,8 +7,8 @@ const mongoose = require('mongoose');
 
 const Comment = mongoose.Schema ({
     content: {type: String, required: true},
-    UserId: {type: String, required: true},
-    PostId: {type: String, required: true}
+    UserId: {type: mongoose.Schema.ObjectId, required: true},
+    PostId: {type: mongoose.Schema.ObjectId, required: true}
 });
 
 module.exports = mongoose.model('comments', Comment);

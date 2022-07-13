@@ -59,7 +59,7 @@ exports.signup = (req, res, next) => {
                     email: email,
                     password: hashPassword,
                     isAdmin: 'false',
-                    imageUrl: 'false'
+                    imageUrl: 'https://zupimages.net/up/22/22/e3uh.jpg'
                 })
                 .then(() => {
                     res.status(201).json({
@@ -124,22 +124,28 @@ exports.login = (req, res, next) => {
 //Modification de l'utilisateur
 
 exports.modifyUser = (req, res, next) => {
+    const {
+        firstName,
+        lastName,
+        email,
+        password
+    } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashPassword = bcrypt.hashSync(password, salt); //Chiffrage du mot de passe
-    if (req.file === undefined) { //Changement des données de l'utilisateur sans modification de l'image
+    if (req.body.imageUrl === undefined) { //Changement des données de l'utilisateur sans modification de l'image
         const ObjectId = require('mongodb').ObjectId;
         const id = ObjectId(req.params.id); // convert to ObjectId
         User.findOne({
                 _id: id
             })
             .then(user => {
-                if (toString(user._id) === toString(req.auth.userId)) {
+                if (toString(user._id) /*=== toString(req.auth.userId)*/) {
                     User.findOneAndUpdate({
                             _id: id
                         }, {
-                            firstName: req.body.firstName,
-                            lastName: req.body.lastName,
-                            email: req.body.email,
+                            firstName: firstName,
+                            lastName: lastName,
+                            email: email,
                             password: hashPassword
                         })
                         //User.updateOne({ _id: id })
@@ -161,7 +167,8 @@ exports.modifyUser = (req, res, next) => {
                 message: error.message
             }));
     } else { // Modification de toutes les données de l'utilisateur
-        const userImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        const imageUrl = req.body;
+        const userImage = `${req.protocol}://${req.get('host')}/images/${imageUrl.filename}`
         const ObjectId = require('mongodb').ObjectId;
         const id = ObjectId(req.params.id); // convert to ObjectId
         User.findOne({
@@ -174,10 +181,10 @@ exports.modifyUser = (req, res, next) => {
                         User.findOneAndUpdate({
                                 _id: id
                             }, {
-                                firstName: req.body.firstName,
-                                lastName: req.body.lastName,
+                                firstName: firstName,
+                                lastName: lastName,
                                 imageUrl: userImage,
-                                email: req.body.email,
+                                email: email,
                                 password: hashPassword
                             })
                             .then(() => res.status(201).json({
@@ -196,7 +203,7 @@ exports.modifyUser = (req, res, next) => {
             })
             .catch(error => res.status(500).json({
                 error,
-                message: error.message
+                message: `bonjour` + error.message
             }));
     }
 };
@@ -298,19 +305,23 @@ exports.getOneUser = (req, res, next) => {
 
 // Modification de l'image d'un utilisateur par l'administrateur ou par l'utilisateur
 exports.deleteUserImage = (req, res, next) => {
+    const userImage = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    const ObjectId = require('mongodb').ObjectId;
+    const id = ObjectId(req.params.id);
     User.findOne({
-            _id: req.params.id
+            _id: id
         })
         .then((user) => {
-            if (user._id === req.body.userId || req.auth.isAdmin) {
-                const filename = user.imageUrl('/images/')[1];
+            if (toString(user._id) === toString(req.body.userId) /*|| req.auth.isAdmin*/) {
+                const imgUrl = req.body;
+                console.log(imgUrl)
+                const filename = user.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
-                    User.updateOne({
-                            ...user,
-                            imageUrl: 'https://i.postimg.cc/MHrVKYGM/default-profil-pict.jpg'
-                        }, {
-                            id: req.params.id
-                        })
+                    User.findOneAndUpdate({
+                        _id: id
+                    }, {
+                        imageUrl: userImage
+                    })
                         .then(() => res.status(201).json({
                             message: 'Image supprimée !'
                         }))

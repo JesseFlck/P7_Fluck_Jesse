@@ -25,7 +25,7 @@ exports.newPost = (req, res, next) => {
             title: req.body.title,
             content: req.body.content,
             imageUrl: `/images/${req.file.filename}`,
-            UserId: req.body.userId
+            userId: req.body.userId
         };
         Post.create(post)
             .then(() => res.status(201).json({
