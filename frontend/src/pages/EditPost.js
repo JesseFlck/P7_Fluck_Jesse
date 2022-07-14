@@ -14,18 +14,16 @@ const EditPost = () => {
     const navigate = useNavigate()
     const { register, handleSubmit } = useForm()
     const [error, setError] = useState()
-    const params = useParams()
     const location = useLocation()
     const { element } = location.state
 
-    console.log(params.id)
 
     const onSubmit = (data) => {
         const formdata = new FormData()
         formdata.append("imageUrl", data.imageUrl[0])
         formdata.append("title", data.title)
         formdata.append("content", data.content)
-        axios.put("http://localhost:3001/post/" + params.id, formdata)
+        axios.put("http://localhost:3001/api/posts/" + element._id, formdata)
             .then((res) => {
                 navigate("/");
             })
@@ -42,7 +40,7 @@ const EditPost = () => {
             </header>
             <div>
             <h1>Modifier son post</h1>
-                <div className='postBody'>
+                <div className='postBody' key={`post-${element._id}`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='editpost'>
                             <label htmlFor="title">Titre :<br />
                                 <input {...register('title')} defaultValue={element.title} type="text" autoFocus maxLength={255} id="title" /></label>

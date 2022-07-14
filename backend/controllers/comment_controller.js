@@ -58,6 +58,8 @@ exports.getAllComments = (req, res, next) => {
                 attributes: ['id', 'firstName', 'lastName']
             }]
         })
+        .populate('postId')
+        .populate('userId')
         .then((comment) => res.status(200).json(comment))
         .catch(error => res.status(400).json({
             error
@@ -83,6 +85,8 @@ exports.getPostComments = (req, res, next) => {
                 attributes: ['id', 'firstName', 'lastName']
             }]
         })
+        .populate('postId')
+        .populate('userId')
         .then((post) => {
             res.status(200).json(post);
         })

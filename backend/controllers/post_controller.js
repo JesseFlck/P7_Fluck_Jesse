@@ -10,7 +10,8 @@ exports.newPost = (req, res, next) => {
         const post = {
             title: req.body.title,
             content: req.body.content,
-            userId: req.body.userId
+            userId: req.body.userId,
+            likes: []
         };
         Post.create(post)
             .then(() => res.status(201).json({
@@ -124,7 +125,7 @@ exports.deletePost = (req, res, next) => {
         .then(post => {
             if (post.UserId === req.body.userId || req.body.isAdmin) {
                 if (post.imageUrl === undefined) { // Sans image
-                    Post.deleteOne({
+                    post.deleteOne({
                             id: req.params.id
                         })
                         .then(() => res.status(201).json({
@@ -137,7 +138,7 @@ exports.deletePost = (req, res, next) => {
                 } else { // Avec image
                     const filename = post.imageUrl.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () =>
-                        Post.deleteOne({
+                        post.deleteOne({
                             id: req.params.id
                         })
                         .then(() => res.status(200).json({
@@ -174,6 +175,7 @@ exports.getAllPosts = (req, res, next) => {
                 attributes: ['id', 'firstName', 'lastName']
             }, ]
         })
+        .populate('userId')
         .then(posts => {
             res.status(200).json(posts);
         })
@@ -188,12 +190,13 @@ exports.getAllPosts = (req, res, next) => {
 
 exports.getOnePost = (req, res, next) => {
     Post.findOne({
-            _id: req.params.id,
-            include: [{
-                model: User,
-                attributes: ['id', 'firstName', 'lastName']
-            }, ]
-        })
+        _id: req.params.id,
+        include: [{
+            model: User,
+            attributes: ['id', 'firstName', 'lastName', 'imageUrl']
+        }, ]
+    })
+    .populate('userId')
         .then(post => {
             res.status(200).json(post)
         })

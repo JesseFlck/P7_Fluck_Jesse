@@ -15,13 +15,16 @@ const CreatePost = () => {
 
     const onSubmit = (data) => {
         const formdata = new FormData()
-        formdata.append('userId', parseToken.id);
-        formdata.append("imageUrl", data.imageUrl[0])
+        console.log(parseToken.userId)
+        formdata.append('userId', parseToken.userId);
+        //formdata.append("imageUrl", data.imageUrl[0])
         formdata.append("title", data.title)
         formdata.append("content", data.content)
         axios.post("http://localhost:3001/api/posts/new", formdata)
-            .then((result) => {
-                navigate("/");
+            .then((res) => {
+                if(res.ok){
+                    navigate("/");
+                }
             })
             .catch((error) => {
                 setError(error.response.data.error)
@@ -46,7 +49,7 @@ const CreatePost = () => {
 
     return (
         <div>
-            <div className='postBody'>
+            <div className='postBody' key={parseToken.userId}>
                 <div className='posterImg'><img src={user.imageUrl} alt='profile pic'/></div>
                 <form onSubmit={handleSubmit(onSubmit)} className='formpost'>
                     <label><input {...register('title')} type="text" name="content" placeholder="Titre du sujet"/></label>
