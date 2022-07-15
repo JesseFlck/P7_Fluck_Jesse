@@ -18,7 +18,12 @@ const parseToken = JSON.parse(token);
 
 const Home = () => {
     const [user, setUser] = useState({});
-        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId)
+        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        })
         .then(({ data }) => {
             return(
             setUser(data)

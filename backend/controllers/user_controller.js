@@ -139,7 +139,7 @@ exports.modifyUser = (req, res, next) => {
                 _id: id
             })
             .then(user => {
-                if (toString(user._id) /*=== toString(req.auth.userId)*/) {
+                if (toString(user._id) === toString(req.auth.userId)) {
                     User.findOneAndUpdate({
                             _id: id
                         }, {
@@ -148,7 +148,7 @@ exports.modifyUser = (req, res, next) => {
                             email: email,
                             password: hashPassword
                         })
-                        //User.updateOne({ _id: id })
+                        User.updateOne({ _id: id })
                         .then(() => res.status(201).json({
                             message: 'Utilisateur modifié !'
                         }))
@@ -266,13 +266,13 @@ exports.getAllUsers = (req, res, next) => {
             ],
         })
         .then((user) => {
-            /*if (user._id === req.body.userId || req.body.isAdmin) {*/
+            if (user._id === req.body.userId || req.body.isAdmin) {
                 res.status(200).json(user);
-            /*} else {
+            } else {
                 res.status(403).json({
                     message: '403: Unauthorized request'
                 });
-            }*/
+            }
         })
         .catch(error => res.status(500).json({
             error,
@@ -290,11 +290,11 @@ exports.getOneUser = (req, res, next) => {
             _id: id
         })
         .then((user) => {
-            /*if (toString(user._id) === toString(id) || req.auth.isAdmin){*/
+            if (toString(user._id) === toString(id) || req.auth.isAdmin){
             res.status(200).json(user);
-            /*} else {
+            } else {
                 res.status(403).json({ message: '403: Unauthorized request'});
-            }*/
+            }
         })
         .catch(error => res.status(500).json({
             error,
@@ -312,7 +312,7 @@ exports.deleteUserImage = (req, res, next) => {
             _id: id
         })
         .then((user) => {
-            if (toString(user._id) === toString(req.body.userId) /*|| req.auth.isAdmin*/) {
+            if (toString(user._id) === toString(req.body.userId) || req.auth.isAdmin) {
                 const imgUrl = req.body;
                 console.log(imgUrl)
                 const filename = user.imageUrl.split('/images/')[1];

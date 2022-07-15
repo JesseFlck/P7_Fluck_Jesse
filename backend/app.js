@@ -18,22 +18,6 @@ mongoose
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
     
-    const Post = require('./models/post_model');
-    const User = require('./models/user_model');
-    const Comment = require('./models/comment_model');
-
-    Post.aggregate([
-        {
-            $lookup:
-              {
-                from: "users",
-                localField: "userId",
-                foreignField: "_id",
-                as: "userInfos"
-              }
-         }
-    ])
-    
 
 // CORS
 

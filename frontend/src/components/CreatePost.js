@@ -20,7 +20,12 @@ const CreatePost = () => {
         formdata.append("title", data.title)
         formdata.append("content", data.content)
 
-        axios.post("http://localhost:3001/api/posts/new", formdata)
+        axios.post("http://localhost:3001/api/posts/new", formdata, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        })
             .then((res) => {
                 //if(res.ok){
                     window.location.reload("/");
@@ -38,7 +43,12 @@ const CreatePost = () => {
     }, [])
 
     const [user, setUser] = useState({});
-        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId)
+        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        })
         .then(({ data }) => {
             return(
             setUser(data)

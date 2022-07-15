@@ -68,17 +68,17 @@ const EditUser = () => {
                     body: JSON.stringify(data),
                     headers: {
                         'Content-Type': 'application/json',
+                        authorization: `Bearer ${parseToken.token}`
                     }
                 }
                 console.log(promise)
-                if(imageUrl === undefined){    
-                fetch(`http://localhost:3001/api/auth/update/` + parseToken.userId, promise)
-        
-                .then((res) => {
-                    console.log((res))
-                    navigate("/profil");
-                })
-                
+                if(!imageUrl){
+                    fetch(`http://localhost:3001/api/auth/update/` + parseToken.userId, promise)
+            
+                    .then((res) => {
+                        console.log((res))
+                        navigate("/profil");
+                    })
                     .catch((err) => console.log(err.message))
                 }else{
                     fetch(`http://localhost:3001/api/auth/update/${parseToken.userId}/${imageUrl}`, promise)

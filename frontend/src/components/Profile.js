@@ -19,7 +19,12 @@ const Profil = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId)
+        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        })
             .then(({ data }) => {
                 setUser(data)
             })
@@ -30,7 +35,12 @@ const Profil = () => {
     }
 
     const deleteUser = () => {
-        axios.delete("http://localhost:3001/api/auth/delete/" + parseToken.userId)
+        axios.delete("http://localhost:3001/api/auth/delete/" + parseToken.userId, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        })
             .then(() =>
                 alert('Votre compte a bien été supprimé !'),
                 navigate("/connexion")
