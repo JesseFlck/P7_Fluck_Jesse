@@ -35,30 +35,6 @@ mongoose
     ])
     
 
-
-
-/*const {Post, User, Comment} = require('./models/models')
-
-Post.aggregate([
-    {
-      $lookup: {
-        from: "users",
-        localField: "userId",
-        foreignField: "_id",
-        as: "userInfos",
-      },
-    },
-
-    {
-        $lookup: {
-            from: "comments",
-            localField: "_id",
-            foreignField: "PostId",
-            as: "commentInfos",
-          },
-    }
-])*/
-
 // CORS
 
 app.use(express.json());

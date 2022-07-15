@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios"
 import { Link } from "react-router-dom"
-import dateFormat from "dateformat"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom'
+//import { DayJS } from 'dayjs';
+import dateFormat from "dateformat"
+//import timePassed from '../utils/utils'
 //import { useForm } from "react-hook-form"
 import '../styles/index.scss'
 const token = localStorage.getItem('token');
@@ -45,7 +47,8 @@ const Post = () => {
     const deletePost = (postid) => {
         axios.delete(`http://localhost:3001/api/posts/${postid}`)
             .then(() =>
-                getposts())
+            getposts())
+            alert('Le post a bien été supprimé !')
     }
 
     // Gestion des likes d'un post
@@ -143,9 +146,9 @@ const Post = () => {
                             <div className='postContent'>
                                 {element.content}
                             </div>
-                            {element.urlImage ? <div>
+                            <div className="imgPost">
                                 <img src={element.imageUrl} alt="" />
-                            </div> : null}
+                            </div>
                                 <div className="like" onClick={() => liked(element._id)}>{like} {element.usersLiked.length}</div>
                         </div>
                     )

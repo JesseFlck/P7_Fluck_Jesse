@@ -81,7 +81,7 @@ const EditUser = () => {
                 
                     .catch((err) => console.log(err.message))
                 }else{
-                    fetch(`http://localhost:3001/api/auth/update/` + parseToken.userId + imageUrl, promise)
+                    fetch(`http://localhost:3001/api/auth/update/${parseToken.userId}/${imageUrl}`, promise)
         
                 .then((res) => {
                     console.log((res))

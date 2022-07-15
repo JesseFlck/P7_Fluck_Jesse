@@ -15,16 +15,16 @@ const CreatePost = () => {
 
     const onSubmit = (data) => {
         const formdata = new FormData()
-        console.log(parseToken.userId)
         formdata.append('userId', parseToken.userId);
-        //formdata.append("imageUrl", data.imageUrl[0])
+        formdata.append("imageUrl", data.imageUrl[0])
         formdata.append("title", data.title)
         formdata.append("content", data.content)
+
         axios.post("http://localhost:3001/api/posts/new", formdata)
             .then((res) => {
-                if(res.ok){
-                    navigate("/");
-                }
+                //if(res.ok){
+                    window.location.reload("/");
+                //}
             })
             .catch((error) => {
                 setError(error.response.data.error)
@@ -52,9 +52,9 @@ const CreatePost = () => {
             <div className='postBody' key={parseToken.userId}>
                 <div className='posterImg'><img src={user.imageUrl} alt='profile pic'/></div>
                 <form onSubmit={handleSubmit(onSubmit)} className='formpost'>
-                    <label><input {...register('title')} type="text" name="content" placeholder="Titre du sujet"/></label>
+                    <label><input {...register('title')} type="text" name="title" placeholder="Titre du sujet"/></label>
                     <label><textarea {...register('content')} type="text" name="content" placeholder="Ecrire un nouveau message"/></label>
-                    <label>Image (jpg, png, jpeg, gif) :<input {...register('imageUrl')} type="file" name="image" /></label>
+                    <label>Image (jpg, png, jpeg, gif) :<input {...register('imageUrl')} type="file" name="imageUrl" /></label>
                     <input type="submit" value="Envoyer" className='boutonform'/>
                 </form>
             </div>
