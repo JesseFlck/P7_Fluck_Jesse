@@ -23,7 +23,12 @@ const EditPost = () => {
         formdata.append("imageUrl", data.imageUrl[0])
         formdata.append("title", data.title)
         formdata.append("content", data.content)
-        axios.put("http://localhost:3001/api/posts/" + element._id, formdata)
+        axios.put("http://localhost:3001/api/posts/" + element._id, formdata, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        }) 
             .then((res) => {
                 navigate("/");
             })

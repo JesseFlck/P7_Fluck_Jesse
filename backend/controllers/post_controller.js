@@ -56,7 +56,9 @@ exports.updatePost = (req, res, next) => {
                 _id: id
             })
             .then(post => {
-                if (toString(post.UserId) === toString(req.body.userId) || post.isAdmin === req.auth.isAdmin) {
+                console.log(post.userId)
+                console.log(req.userId)
+                if (toString(post.userId) === toString(req.body.userId) || req.auth.isAdmin) {
                     Post.findOneAndUpdate({
                             _id: id
                         }, {

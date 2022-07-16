@@ -132,6 +132,11 @@ exports.modifyUser = (req, res, next) => {
     } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashPassword = bcrypt.hashSync(password, salt); //Chiffrage du mot de passe
+    if (!passwordSchema.validate(password)) {
+        return res.status(400).json({
+            error: 'Mot de passe incorrect'
+        });
+    }else{
     if (req.body.imageUrl === undefined) { //Changement des données de l'utilisateur sans modification de l'image
         const ObjectId = require('mongodb').ObjectId;
         const id = ObjectId(req.params.id); // convert to ObjectId
@@ -148,7 +153,7 @@ exports.modifyUser = (req, res, next) => {
                             email: email,
                             password: hashPassword
                         })
-                        User.updateOne({ _id: id })
+                        //User.updateOne({ _id: id })
                         .then(() => res.status(201).json({
                             message: 'Utilisateur modifié !'
                         }))
@@ -205,7 +210,7 @@ exports.modifyUser = (req, res, next) => {
                 error,
                 message: `bonjour` + error.message
             }));
-    }
+    }}
 };
 
 

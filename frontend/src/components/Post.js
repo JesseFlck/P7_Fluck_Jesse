@@ -42,16 +42,16 @@ const Post = () => {
 
     // modification d'un post
     const updatePost = (postid) => {
-        axios.put("http://localhost:3001/api/posts/" + postid, {
-            headers: {
-                'Content-Type': 'application/json',
-                authorization: `Bearer ${parseToken.token}`
-            }
-        })
-            .then(() =>
+        console.log(parseToken.userId)
+        console.log(post.userId)
+        if(parseToken.userId === post.userId){
                 navigate("/modifierpost")
-            )
+            
+        }else{
+            alert('Vous n\'êtes pas autorisé à modifier ce post !')
+        }
     }
+    
 
     // Mise en place de la suppression des posts
     const deletePost = (postid) => {
@@ -140,12 +140,7 @@ const Post = () => {
         
             
         
-            const[iconState, setIconState] = useState(false);
-
-            const iconFunction = () => {
-                setIconState(!iconState)
-            }
-
+            
             
             return (
                 <>
@@ -155,23 +150,12 @@ const Post = () => {
                     const like = <FontAwesomeIcon icon={faThumbsUp} />
                     const del = <FontAwesomeIcon icon={faTrash} />
                     const edit = <FontAwesomeIcon icon={faEdit} />
-                    if(element.userId === parseToken.userId || user.isAdmin){
-                        return(
-                        <div className="icons">
-                                        <span className="centerIcon">
-                                            <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>
-                                        </span>
-                                        <span className="centerIcon">
-                                            <div className="iconDelete" id={element._id} onClick={() => setIsDelete(!isDelete) + deletePost(element._id)}>{del}</div>
-                                        </span>
-                                    </div>
-                )}
+                    
                     return (
                         <div className="postBody" key={`post-${element._id}`}>
                             <div className='posterImg'>
                                 <img src={element.userId.imageUrl} alt='profile pic'/>
                             </div>
-                            {element.userId === parseToken.userId && (
                             <div className="icons">
                                 <span className="centerIcon">
                                     <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>
@@ -180,7 +164,6 @@ const Post = () => {
                                     <div className="iconDelete" id={element._id} onClick={() => setIsDelete(!isDelete) + deletePost(element._id)}>{del}</div>
                                 </span>
                             </div>
-                            )}
                             <div className="postInfos">
                                 <div className='postUser'>{element.userId.firstName} {element.userId.lastName}</div>
                                 <div className='postDate'>{date}</div>
