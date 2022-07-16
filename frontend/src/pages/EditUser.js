@@ -72,7 +72,7 @@ const EditUser = () => {
                     }
                 }
                 console.log(promise)
-                if(!imageUrl){
+                /*if(!imageUrl){*/
                     fetch(`http://localhost:3001/api/auth/update/` + parseToken.userId, promise)
             
                     .then((res) => {
@@ -80,7 +80,7 @@ const EditUser = () => {
                         navigate("/profil");
                     })
                     .catch((err) => console.log(err.message))
-                }else{
+                }/*else{
                     fetch(`http://localhost:3001/api/auth/update/${parseToken.userId}/${imageUrl}`, promise)
         
                 .then((res) => {
@@ -89,8 +89,8 @@ const EditUser = () => {
                 })
                 
                     .catch((err) => console.log(err.message))
-                }
-        }
+                }*/
+        
     };
 
 

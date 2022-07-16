@@ -124,94 +124,79 @@ exports.login = (req, res, next) => {
 //Modification de l'utilisateur
 
 exports.modifyUser = (req, res, next) => {
-    const {
-        firstName,
-        lastName,
-        email,
-        password
-    } = req.body;
-    const salt = bcrypt.genSaltSync(10);
-    const hashPassword = bcrypt.hashSync(password, salt); //Chiffrage du mot de passe
-    if (!passwordSchema.validate(password)) {
-        return res.status(400).json({
-            error: 'Mot de passe incorrect'
-        });
-    }else{
-    if (req.body.imageUrl === undefined) { //Changement des données de l'utilisateur sans modification de l'image
-        const ObjectId = require('mongodb').ObjectId;
-        const id = ObjectId(req.params.id); // convert to ObjectId
-        User.findOne({
-                _id: id
+    const { firstName, lastName, email, password, imageUrl } = req.body;
+    const hashPassword =
+      password && bcrypt.hashSync(password, bcrypt.genSaltSync(10)); //Chiffrage du mot de passe
+  
+    if (password && !passwordSchema.validate(password))
+      return res.status(400).json({
+        error: "Mot de passe incorrect",
+      });
+  
+    //Changement des données de l'utilisateur sans modification de l'image
+    const ObjectId = require("mongodb").ObjectId;
+    const id = ObjectId(req.params.id); // convert to ObjectId
+    User.findOne({
+      _id: id,
+    })
+      .then((user) => {
+        if (user._id.toString() !== req.userId.toString()) {
+          res.status(403).json({
+            message: "Vous n'êtes pas autorisé à modifier cet utilisateur !",
+          });
+        }
+        
+        const filenameDb = user.imageUrl.split("/images/")[1];
+        const userImage = imageUrl && `${req.protocol}://${req.get(
+          "host"
+        )}/images/${req.body.filename}`;
+        console.log(req.body)
+        
+        if (req.body.imageUrl && filenameDb) { // suppession img
+  
+          fs.unlink(`images/${filenameDb}`, (error) => {
+            if (error) {
+              console.error(error);
+              throw error;
+            }
+            console.log(`DEBUG image deleted : images/${filenameDb}`);
+          });
+        }
+  
+        User.findOneAndUpdate(
+          {
+            _id: id,
+          },
+          {
+            firstName: firstName,
+            lastName: lastName,
+            imageUrl: userImage,
+            email: email,
+            password: hashPassword,
+          }
+        )
+          //User.updateOne({ _id: id })
+          .then(() =>
+            res.status(201).json({
+              message: "Utilisateur modifié !",
             })
-            .then(user => {
-                if (toString(user._id) === toString(req.auth.userId)) {
-                    User.findOneAndUpdate({
-                            _id: id
-                        }, {
-                            firstName: firstName,
-                            lastName: lastName,
-                            email: email,
-                            password: hashPassword
-                        })
-                        //User.updateOne({ _id: id })
-                        .then(() => res.status(201).json({
-                            message: 'Utilisateur modifié !'
-                        }))
-                        .catch(error => res.status(400).json({
-                            error,
-                            message: error.message
-                        }));
-                } else {
-                    res.status(403).json({
-                        message: 'Vous n\'êtes pas autorisé à modifier cet utilisateur !'
-                    });
-                }
+          )
+          .catch((error) =>
+            res.status(400).json({
+              error,
+              message: error.message,
             })
-            .catch(error => res.status(500).json({
-                error,
-                message: error.message
-            }));
-    } else { // Modification de toutes les données de l'utilisateur
-        const imageUrl = req.body;
-        const userImage = `${req.protocol}://${req.get('host')}/images/${imageUrl.filename}`
-        const ObjectId = require('mongodb').ObjectId;
-        const id = ObjectId(req.params.id); // convert to ObjectId
-        User.findOne({
-                _id: id
-            })
-            .then((user) => {
-                if (toString(user._id) === toString(req.auth.userId)) {
-                    const filename = user.imageUrl.split('/images/')[1];
-                    fs.unlink(`images/${filename}`, () => {
-                        User.findOneAndUpdate({
-                                _id: id
-                            }, {
-                                firstName: firstName,
-                                lastName: lastName,
-                                imageUrl: userImage,
-                                email: email,
-                                password: hashPassword
-                            })
-                            .then(() => res.status(201).json({
-                                message: 'Utilisateur modifié !'
-                            }))
-                            .catch(error => res.status(400).json({
-                                error,
-                                message: error.message
-                            }));
-                    });
-                } else {
-                    res.status(403).json({
-                        message: 'Vous n\'êtes pas autorisé à modifier cet utilisateur.'
-                    });
-                }
-            })
-            .catch(error => res.status(500).json({
-                error,
-                message: `bonjour` + error.message
-            }));
-    }}
-};
+          );
+      })
+      .catch((error) =>
+        {console.error(error)
+        res.status(500).json({
+          error,
+          message: error.message,
+        })
+    }
+      );
+  };
 
 
 //Suppression d'un utilisateur par l'utilisateur ou l'administrateur
