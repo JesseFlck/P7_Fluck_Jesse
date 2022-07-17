@@ -62,9 +62,9 @@ const CreatePost = () => {
             <div className='postBody' key={parseToken.userId}>
                 <div className='posterImg'><img src={user.imageUrl} alt='profile pic'/></div>
                 <form onSubmit={handleSubmit(onSubmit)} className='formpost'>
-                    <label><input {...register('title')} type="text" name="title" placeholder="Titre du sujet"/></label>
-                    <label><textarea {...register('content')} type="text" name="content" placeholder="Ecrire un nouveau message"/></label>
-                    <label>Image (jpg, png, jpeg, gif) :<input {...register('imageUrl')} type="file" name="imageUrl" /></label>
+                    <label htmlFor='title'><input {...register('title')} type="text" name="title" placeholder="Titre du sujet"/></label>
+                    <label htmlFor='content'><textarea {...register('content')} type="text" name="content" placeholder="Ecrire un nouveau message"/></label>
+                    <label htmlFor='imageUrl'>Image (jpg, png, jpeg, gif) :<input {...register('imageUrl')} type="file" name="imageUrl" /></label>
                     <input type="submit" value="Envoyer" className='boutonform'/>
                 </form>
             </div>

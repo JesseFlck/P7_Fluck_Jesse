@@ -124,7 +124,8 @@ exports.login = (req, res, next) => {
 //Modification de l'utilisateur
 
 exports.modifyUser = (req, res, next) => {
-    const { firstName, lastName, email, password, imageUrl } = req.body;
+    const { firstName, lastName, email, password } = req.body;
+    const image = req.file;
     const hashPassword =
       password && bcrypt.hashSync(password, bcrypt.genSaltSync(10)); //Chiffrage du mot de passe
   
@@ -145,14 +146,13 @@ exports.modifyUser = (req, res, next) => {
             message: "Vous n'êtes pas autorisé à modifier cet utilisateur !",
           });
         }
-        
+  
         const filenameDb = user.imageUrl.split("/images/")[1];
-        const userImage = imageUrl && `${req.protocol}://${req.get(
-          "host"
-        )}/images/${req.body.filename}`;
-        console.log(req.body)
-        
-        if (req.body.imageUrl && filenameDb) { // suppession img
+        const userImage =
+          image && `${req.protocol}://${req.get("host")}/${image.path}`;
+  
+        if (image && filenameDb) {
+          // suppession img
   
           fs.unlink(`images/${filenameDb}`, (error) => {
             if (error) {
@@ -188,14 +188,13 @@ exports.modifyUser = (req, res, next) => {
             })
           );
       })
-      .catch((error) =>
-        {console.error(error)
+      .catch((error) => {
+        console.error(error);
         res.status(500).json({
           error,
           message: error.message,
-        })
-    }
-      );
+        });
+      });
   };
 
 
