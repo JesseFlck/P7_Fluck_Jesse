@@ -11,7 +11,7 @@ exports.newPost = (req, res, next) => {
             title: req.body.title,
             content: req.body.content,
             userId: req.body.userId,
-            likes: []
+            likes: [],
         };
         Post.create(post)
             .then(() => res.status(201).json({
@@ -22,7 +22,8 @@ exports.newPost = (req, res, next) => {
                 message: error.message
             }));
     } else if (req.body.title && req.body.content && req.file) { // Avec image dans le post
-        const postImage = `${req.protocol}://${req.get('host')}/images/${imageUrl.filename}`
+        const image = req.file;
+        const postImage = image && `${req.protocol}://${req.get("host")}/${image.path}`;
         const post = {
             title: req.body.title,
             content: req.body.content,

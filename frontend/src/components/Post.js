@@ -9,6 +9,7 @@ import dateFormat from "dateformat"
 //import timePassed from '../utils/utils'
 //import { useForm } from "react-hook-form"
 import '../styles/index.scss'
+import { parse } from "@fortawesome/fontawesome-svg-core";
 const token = localStorage.getItem('token');
 const parseToken = JSON.parse(token);
 
@@ -44,7 +45,7 @@ const Post = () => {
     const updatePost = (postid) => {
         console.log(parseToken.userId)
         console.log(post.userId)
-        if(parseToken.userId === post.userId){
+        if(parseToken.userId === post.userId || user.isAdmin){
                 navigate("/modifierpost")
             
         }else{
@@ -69,10 +70,16 @@ const Post = () => {
     // Gestion des likes d'un post
     
     const liked = (postid) => {
+        console.log(postid)
+        console.log(parseToken.userId)
         axios.post(`http://localhost:3001/api/posts/${postid}/like/`, {
             headers: {
                 'Content-Type': 'application/json',
                 authorization: `Bearer ${parseToken.token}`
+            },
+            body: {
+                    postId: postid,
+                    userId: parseToken.userId
             }
         })
             .then(() => {
@@ -150,20 +157,40 @@ const Post = () => {
                     const like = <FontAwesomeIcon icon={faThumbsUp} />
                     const del = <FontAwesomeIcon icon={faTrash} />
                     const edit = <FontAwesomeIcon icon={faEdit} />
-                    
-                    return (
-                        <div className="postBody" key={`post-${element._id}`}>
-                            <div className='posterImg'>
-                                <img src={element.userId.imageUrl} alt='profile pic'/>
-                            </div>
-                            <div className="icons">
+                    //console.log(parseToken.userId)
+                    //console.log(req.auth)
+                    //console.log('user post', element.userId._id)
+                    //console.log('user token', parseToken.userId)
+                    /*const postOptions = () => {
+                        if(element.userId._id === parseToken.userId){
+                            return(
+                                <div className="icon">
                                 <span className="centerIcon">
                                     <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>
                                 </span>
                                 <span className="centerIcon">
                                     <div className="iconDelete" id={element._id} onClick={() => setIsDelete(!isDelete) + deletePost(element._id)}>{del}</div>
                                 </span>
+                                </div>
+                            )
+                        }
+                    }*/
+                    
+                    return (
+                        <div className="postBody" key={`post-${element._id}`}>
+                            <div className='posterImg'>
+                                <img src={element.userId.imageUrl} alt='profile pic'/>
                             </div>
+                                {element.userId._id === parseToken.userId ? <span>
+                                    <div className="icons">
+                                        <span className="centerIcon">
+                                            <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>
+                                        </span>
+                                        <span className="centerIcon">
+                                            <div className="iconDelete" id={element._id} onClick={() => setIsDelete(!isDelete) + deletePost(element._id)}>{del}</div>
+                                        </span>
+                                    </div>
+                                </span> : null}
                             <div className="postInfos">
                                 <div className='postUser'>{element.userId.firstName} {element.userId.lastName}</div>
                                 <div className='postDate'>{date}</div>

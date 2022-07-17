@@ -11,6 +11,7 @@ const Post = mongoose.Schema ({
     content: {type: String, required: true},
     imageUrl: {type: String, required: false},
     usersLiked: [],
+    createdAt: {type: Date, required: true} // à vérifier !
 });
 
 
