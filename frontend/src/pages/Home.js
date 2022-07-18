@@ -17,6 +17,12 @@ const parseToken = JSON.parse(token);
 
 
 const Home = () => {
+
+    if (!parseToken) {
+        window.location.href = "/connexion";
+      };
+
+
     const [user, setUser] = useState({});
         axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
             headers: {

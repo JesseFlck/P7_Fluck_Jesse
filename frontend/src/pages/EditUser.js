@@ -11,6 +11,10 @@ const parseToken = JSON.parse(token);
 
 const EditUser = () => {
 
+    if (!parseToken) {
+        window.location.href = "/connexion";
+      };
+
     const navigate = useNavigate()
     const { register, handleSubmit } = useForm()
     const [error, setError] = useState()

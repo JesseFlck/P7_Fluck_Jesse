@@ -14,6 +14,11 @@ const parseToken = JSON.parse(token);
 
 
 const AllUsers = () => {
+
+    if (!parseToken) {
+        window.location.href = "/connexion";
+      };
+
     return (
         <div>
             <header className='connectedHeader'>

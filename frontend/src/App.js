@@ -1,6 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Home from './pages/Home';
+import { BrowserRouter, Routes, Route } from "react-router-dom";import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import EditUser from './pages/EditUser';
@@ -9,7 +7,9 @@ import Signup from './pages/Signup';
 import AllUsers from './pages/AllUsers'
 
 
+
 const App = () => {
+
       return (
         <BrowserRouter>
           <Routes>
