@@ -28,6 +28,22 @@ const Post = () => {
     const [isDelete, setIsDelete] = useState(false);
     //const [comment, setComment] = useState({})
 
+
+    // récupération de l'utilisateur connecté
+    const [userOnline, setUserOnline] = useState({});
+        axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${parseToken.token}`
+            }
+        })
+        .then(({ data }) => {
+            return(
+            setUserOnline(data)
+            )
+        })
+
+
     // Récupération de tous les posts
     function getposts() {
         axios.get("http://localhost:3001/api/posts/", {
@@ -68,25 +84,28 @@ const Post = () => {
     }
 
     // Gestion des likes d'un post
-    
+
     const liked = (postid) => {
         console.log(postid)
         console.log(parseToken.userId)
+
+        const infosLike = {
+            postId: postid,
+            userId: parseToken.userId
+        }
+
         axios.post(`http://localhost:3001/api/posts/${postid}/like/`, {
             headers: {
                 'Content-Type': 'application/json',
                 authorization: `Bearer ${parseToken.token}`
             },
-            body: {
-                    postId: postid,
-                    userId: parseToken.userId
-            }
+            body: JSON.stringify(infosLike)
         })
             .then(() => {
                 getposts()
             })
             .catch(err => {
-                console.log(err);
+                console.log('bonjour', err);
             })
     }
 
@@ -103,8 +122,11 @@ const Post = () => {
         axios.delete("http://localhost:3001/api/comment/delete/" + commentid)
             .then(() =>
                 getposts())
-    }*/
+            }*/
+            
+            
 
+    
 
     useEffect(() => {
         if (!window.localStorage.token) {
@@ -122,7 +144,9 @@ const Post = () => {
             .then(({ data }) => {
                 setUser(data)
             })
-
+            
+            
+            
 
         /*const getComm = (postid) => {
             axios.get("http://localhost:3001/api/comment/all")
@@ -153,35 +177,17 @@ const Post = () => {
                 <>
             <div className="post" key={post.id}>
                 {post.map(element => {
-                    const date = dateFormat(element.date, "dd/mm/yyyy") + ' à ' + dateFormat(element.date, "HH:MM");
+                    const date = dateFormat(element.createdAt, "dd/mm/yyyy") + ' à ' + dateFormat(element.createdAt, "HH:MM");
                     const like = <FontAwesomeIcon icon={faThumbsUp} />
                     const del = <FontAwesomeIcon icon={faTrash} />
                     const edit = <FontAwesomeIcon icon={faEdit} />
-                    //console.log(parseToken.userId)
-                    //console.log(req.auth)
-                    //console.log('user post', element.userId._id)
-                    //console.log('user token', parseToken.userId)
-                    /*const postOptions = () => {
-                        if(element.userId._id === parseToken.userId){
-                            return(
-                                <div className="icon">
-                                <span className="centerIcon">
-                                    <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>
-                                </span>
-                                <span className="centerIcon">
-                                    <div className="iconDelete" id={element._id} onClick={() => setIsDelete(!isDelete) + deletePost(element._id)}>{del}</div>
-                                </span>
-                                </div>
-                            )
-                        }
-                    }*/
                     
                     return (
                         <div className="postBody" key={`post-${element._id}`}>
                             <div className='posterImg'>
                                 <img src={element.userId.imageUrl} alt='profile pic'/>
                             </div>
-                                {element.userId._id === parseToken.userId ? <span>
+                                {element.userId._id === parseToken.userId || userOnline.isAdmin ? <span>
                                     <div className="icons">
                                         <span className="centerIcon">
                                             <Link aria-label="Modifier" to={`/modifierpost`} state={{ element }}><div>{edit}</div></Link>

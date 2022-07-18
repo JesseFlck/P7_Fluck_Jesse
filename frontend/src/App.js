@@ -6,6 +6,7 @@ import Profile from './pages/Profile';
 import EditUser from './pages/EditUser';
 import EditPost from './pages/EditPost';
 import Signup from './pages/Signup';
+import AllUsers from './pages/AllUsers'
 
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/modifierpost" element={<EditPost />} />
             <Route path="/profil" element={<Profile />} />
+            <Route path="/membres" element={<AllUsers />} />
             <Route path="/modifierprofil" element={<EditUser />} />
             <Route path="/inscription" element={<Signup />} />
             <Route path="/connexion" element={<Login />} />

@@ -12,6 +12,7 @@ exports.newPost = (req, res, next) => {
             content: req.body.content,
             userId: req.body.userId,
             likes: [],
+            //createdAt: voir date du jour avec js (année, mois, jour, heure et minutes)
         };
         Post.create(post)
             .then(() => res.status(201).json({
@@ -172,7 +173,7 @@ exports.deletePost = (req, res, next) => {
 exports.getAllPosts = (req, res, next) => {
     Post.find({
             order: [
-                ['createdAt', 'DESC']
+                ['createdAt', 'DESC'] //tester ici ASC
             ],
             include: [{
                 model: User,
@@ -248,7 +249,6 @@ exports.likePost = (req, res) => {
                         error
                     }));
             } else {
-                // MAJ des likes déjà effectifs
                 Post.updateOne({
                             _id: id
                         }, {

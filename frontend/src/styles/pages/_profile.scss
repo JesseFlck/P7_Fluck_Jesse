@@ -1,4 +1,4 @@
-.profile, .editprofile{
+.profile, .editprofile {
     max-width: 70%;
     margin: auto;
     text-align: justify;
@@ -102,3 +102,85 @@
             }
         }
     }
+
+
+
+.profileCardAllUsers {
+    max-width: 70%;
+    margin: auto;
+    text-align: justify;
+    //border: 2px $couleur-tertiaire solid;
+    box-shadow: 3px 3px 5px $couleur-tertiaire;
+    border-radius: 15px;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 15px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .userPic {
+        display: flex;
+        padding-right: 20px;
+        img{
+            height: 100px;
+            width: 100px;
+            max-height: 100px;
+            max-width: 100px;
+            border-radius: 50%;
+            border: 3px $couleur-secondaire solid;
+            margin: auto;
+        }
+    }
+
+    p{
+        padding-bottom: 10px;
+    }
+
+.profileOptionsAllUsers{
+    max-width: 70%;
+    margin: auto;
+    text-align: justify;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 15px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    position: relative;
+    margin-top: 15px;
+
+    .centerIcon {
+        width: 20px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .iconEdit {
+        color: $couleur-tertiaire;
+        margin: 0 auto;
+        margin-bottom: 15px;
+        transform: scale(1);
+        transition: transform 300ms;
+
+        &:hover{
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+    }
+
+    .iconDelete {
+        color: $couleur-primaire;
+        margin: 0 auto;
+        margin-top: 15px;
+        transform: scale(1);
+        transition: transform 300ms;
+
+        &:hover{
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+    }
+}
+}
