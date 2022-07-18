@@ -4,29 +4,23 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom'
-//import { DayJS } from 'dayjs';
-import dateFormat from "dateformat"
-//import timePassed from '../utils/utils'
-//import { useForm } from "react-hook-form"
 import '../styles/index.scss'
-import { parse } from "@fortawesome/fontawesome-svg-core";
+import moment from 'moment';
+import 'moment/locale/fr';
+moment.locale('fr');
 const token = localStorage.getItem('token');
 const parseToken = JSON.parse(token);
 
 
-// Affiche l'ensemble des posts, la possibilité d'ajouter ou retirer un like
-// et si l'utilisateur possède les droits, la modification ou la suppression d'un post
+// Affichage de l'ensemble des posts et options
 const Post = () => {
     const navigate = useNavigate();
-    //const { register, handleSubmit } = useForm()
-    //const [error, setError] = useState()
 
 
 
     const [post, setPost] = useState([]);
     const [user, setUser] = useState({});
     const [isDelete, setIsDelete] = useState(false);
-    //const [comment, setComment] = useState({})
 
 
     // récupération de l'utilisateur connecté
@@ -108,21 +102,6 @@ const Post = () => {
                 console.log('bonjour', err);
             })
     }
-
-
-    // Mise en place de la modification des commentaires
-    /*const editComment = (commentid) => {
-        axios.put('http://localhost:3001/api/comment/update/' + commentid)
-            .then(() =>
-                getposts())
-    }*/
-
-    // Mise en place de la suppression des commentaires
-    /*const deleteComment = (commentid) => {
-        axios.delete("http://localhost:3001/api/comment/delete/" + commentid)
-            .then(() =>
-                getposts())
-            }*/
             
             
 
@@ -144,30 +123,8 @@ const Post = () => {
             .then(({ data }) => {
                 setUser(data)
             })
-            
-            
-            
-
-        /*const getComm = (postid) => {
-            axios.get("http://localhost:3001/api/comment/all")
-            .then(({ data }) => {
-                setComment(data)
-            })
-        }*/
         }, [])
 
-        /*const onSubmit = (data) => {
-            const formdata = new FormData()
-            //formdata.append('userId', parseToken.id);
-            formdata.append("content", data.content)
-            axios.post("http://localhost:3001/api/comment/reply", formdata)
-                .then((res) => {
-                    navigate("/");
-                })
-                .catch((error) => {
-                    setError(error.response.data.error)
-                })
-            }*/
         
             
         
@@ -177,7 +134,6 @@ const Post = () => {
                 <>
             <div className="post" key={post.id}>
                 {post.map(element => {
-                    const date = dateFormat(element.createdAt, "dd/mm/yyyy") + ' à ' + dateFormat(element.createdAt, "HH:MM");
                     const like = <FontAwesomeIcon icon={faThumbsUp} />
                     const del = <FontAwesomeIcon icon={faTrash} />
                     const edit = <FontAwesomeIcon icon={faEdit} />
@@ -199,7 +155,7 @@ const Post = () => {
                                 </span> : null}
                             <div className="postInfos">
                                 <div className='postUser'>{element.userId.firstName} {element.userId.lastName}</div>
-                                <div className='postDate'>{date}</div>
+                                <div className='postDate'>{moment(element.createdAt).format('LLL')}</div>
                             </div>
                             <div className='postTitle'>
                                 {element.title ? <h2>{element.title}</h2> : null}

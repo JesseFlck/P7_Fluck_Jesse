@@ -1,32 +1,20 @@
 import { useState, useEffect } from "react";
 import axios from "axios"
-import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen, faUserSlash } from "@fortawesome/free-solid-svg-icons";
+import { faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom'
-//import { DayJS } from 'dayjs';
-import dateFormat from "dateformat"
-//import timePassed from '../utils/utils'
-//import { useForm } from "react-hook-form"
 import '../styles/index.scss'
-import { parse } from "@fortawesome/fontawesome-svg-core";
 const token = localStorage.getItem('token');
 const parseToken = JSON.parse(token);
 
 
-// Affiche l'ensemble des posts, la possibilité d'ajouter ou retirer un like
-// et si l'utilisateur possède les droits, la modification ou la suppression d'un post
+// Affichage de l'ensemble des utilisateurs
 const UsersCard = () => {
     const navigate = useNavigate();
-    //const { register, handleSubmit } = useForm()
-    //const [error, setError] = useState()
 
 
 
-    const [post, setPost] = useState([]);
     const [user, setUser] = useState([]);
-    const [isDelete, setIsDelete] = useState(false);
-    //const [comment, setComment] = useState({})
 
     // Récupération de tous les posts
     function getusers() {
@@ -40,6 +28,7 @@ const UsersCard = () => {
                 setUser(data)
             })
     }
+
 
 
     getusers();
@@ -58,29 +47,14 @@ const UsersCard = () => {
             navigate("/modifierprofil")
 }
 
-const deleteUser = () => {
-    axios.delete("http://localhost:3001/api/auth/delete/" + parseToken.userId, {
-        headers: {
-            'Content-Type': 'application/json',
-            authorization: `Bearer ${parseToken.token}`
-        }
-    })
-        .then(() =>
-            alert('Votre compte a bien été supprimé !'),
-            navigate("/connexion")
-        )
-}
 
 const iconDeleteUser = <FontAwesomeIcon icon={faUserSlash} />
-    const iconEditUser = <FontAwesomeIcon icon={faPen} />
 
-        
             
             return (
                 <>
             <div className="post" key={user.id}>
                 {user.map(element => {
-                    
                     return(
                         <div className="profileCardAllUsers"  key={`members-${element._id}`}>
                                 <div className="userPic">
@@ -93,10 +67,19 @@ const iconDeleteUser = <FontAwesomeIcon icon={faUserSlash} />
                             </div>
                             <div className="profileOptionsAllUsers">
                                 <span className="centerIcon">
-                                    <div className="iconEdit" onClick={() => editUser()}>{iconEditUser} Modifier l'utilisateur</div>
-                                </span>
-                                <span className="centerIcon">
-                                    <div className="iconDelete" onClick={() => deleteUser()}>{iconDeleteUser} Supprimer le compte</div>
+                                    <div className="iconDelete" onClick={() => 
+                            
+                                        axios.delete("http://localhost:3001/api/auth/delete/" + element._id, {
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                authorization: `Bearer ${parseToken.token}`
+                                            }
+                                        })
+                                            .then(() =>
+                                                alert('Le compte a bien été supprimé !'),
+                                                navigate("/membres")
+                                            )
+                                    }>{iconDeleteUser} Supprimer le compte</div>
                                 </span>
                             </div>
                         </div>

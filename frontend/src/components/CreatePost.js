@@ -27,9 +27,7 @@ const CreatePost = () => {
             }
         })
             .then((res) => {
-                //if(res.ok){
                     window.location.reload("/");
-                //}
             })
             .catch((error) => {
                 setError(error.response.data.error)

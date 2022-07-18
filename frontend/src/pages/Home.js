@@ -8,14 +8,6 @@ const token = localStorage.getItem('token');
 const parseToken = JSON.parse(token);
 
 
-//const userid = localStorage.getItem(parseToken.userId)
-//console.log(userid)
-
-
-
-//console.log(GetUser.data)
-
-
 const Home = () => {
 
     if (!parseToken) {

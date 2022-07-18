@@ -1,7 +1,7 @@
 import "../styles/index.scss";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
-import { useParams, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import HeaderConnected from '../components/HeaderConnected';
 import { useForm } from "react-hook-form"
 import React, { useState } from 'react';
@@ -55,7 +55,7 @@ const EditPost = () => {
                                 <input {...register('title')} defaultValue={element.title} type="text" autoFocus maxLength={255} id="title" /></label>
                             <br /><br />
                             <label htmlFor="content">Contenu :<br />
-                                <textarea {...register('content')} defaultValue={element.content} type="text" /*maxLength={500}*/ id="content" /></label>
+                                <textarea {...register('content')} defaultValue={element.content} type="text" id="content" /></label>
                             <br /><br />
                             <input {...register('imageUrl')} aria-label="Ajouter une image" type="file" />
                             <br /><br />

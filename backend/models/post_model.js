@@ -10,11 +10,9 @@ const Post = mongoose.Schema ({
     title: {type: String, required: true},
     content: {type: String, required: true},
     imageUrl: {type: String, required: false},
-    usersLiked: [],
-    createdAt: {type: Date, required: true, default: Date.now} // à vérifier !
-});
+    usersLiked: []
+}, { timestamps: true });
 
-Post.set('timestamps', true)
 
 
 module.exports = mongoose.model('posts', Post);

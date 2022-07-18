@@ -11,8 +11,7 @@ exports.newPost = (req, res, next) => {
             title: req.body.title,
             content: req.body.content,
             userId: req.body.userId,
-            likes: [],
-            //createdAt: voir date du jour avec js (année, mois, jour, heure et minutes)
+            likes: []
         };
         Post.create(post)
             .then(() => res.status(201).json({
@@ -179,7 +178,7 @@ exports.getAllPosts = (req, res, next) => {
                 model: User,
                 attributes: ['id', 'firstName', 'lastName']
             }, ]
-        })
+        }).sort({ createdAt: -1 })
         .populate('userId')
         .then(posts => {
             res.status(200).json(posts);
