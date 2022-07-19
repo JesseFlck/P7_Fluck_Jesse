@@ -12,7 +12,7 @@ const parseToken = JSON.parse(token);
 const Home = () => {
 
     if (!parseToken) {
-        window.location.href = "/connexion";
+        window.location.href = "/connexion"
       };
 
       //useeffect

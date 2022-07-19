@@ -5,7 +5,6 @@ import EditUser from './pages/EditUser';
 import EditPost from './pages/EditPost';
 import Signup from './pages/Signup';
 import AllUsers from './pages/AllUsers';
-import UserContext from "./store/user-contexte";
 
 
 
