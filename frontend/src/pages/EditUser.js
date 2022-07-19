@@ -1,7 +1,6 @@
 import "../styles/index.scss";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
-import { useParams, useLocation } from "react-router-dom"
 import HeaderConnected from '../components/HeaderConnected';
 import { useForm } from "react-hook-form"
 import React, { useState } from 'react';

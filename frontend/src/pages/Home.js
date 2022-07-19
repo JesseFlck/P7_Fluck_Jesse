@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { useState } from "react";
+import { useState, useContext } from "react";
 import React from 'react';
 import HeaderConnected from '../components/HeaderConnected';
 import CreatePost from '../components/CreatePost';
 import Post from '../components/Post';
+//import UserContext from '../store/user-contexte';
 const token = localStorage.getItem('token');
 const parseToken = JSON.parse(token);
 
@@ -14,7 +15,7 @@ const Home = () => {
         window.location.href = "/connexion";
       };
 
-
+      //useeffect
     const [user, setUser] = useState({});
         axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
             headers: {
@@ -27,6 +28,9 @@ const Home = () => {
             setUser(data)
             )
         })
+
+
+    // user = useContext(UserContext)
 
     return(
         <div className="home">

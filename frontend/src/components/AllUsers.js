@@ -16,7 +16,7 @@ const UsersCard = () => {
 
     const [user, setUser] = useState([]);
 
-    // Récupération de tous les posts
+    // Récupération de tous les utilisateurs
     function getusers() {
         axios.get("http://localhost:3001/api/auth/allusers/", {
             headers: {
@@ -34,7 +34,7 @@ const UsersCard = () => {
     getusers();
    
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (!window.localStorage.token) {
             navigate('/')
         }
@@ -45,7 +45,7 @@ const UsersCard = () => {
 
         const editUser = () => {
             navigate("/modifierprofil")
-}
+        }*/
 
 
 const iconDeleteUser = <FontAwesomeIcon icon={faUserSlash} />

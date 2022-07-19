@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom'
+//import UserOnline from "../utils/userOnline";
 import '../styles/index.scss'
 import moment from 'moment';
 import 'moment/locale/fr';
@@ -20,6 +21,7 @@ const Post = () => {
 
     const [post, setPost] = useState([]);
     const [user, setUser] = useState({});
+    const [likes, setLikes] = useState({});
     const [isDelete, setIsDelete] = useState(false);
 
 
@@ -79,16 +81,18 @@ const Post = () => {
 
     // Gestion des likes d'un post
 
+
     const liked = (postid) => {
-        console.log(postid)
-        console.log(parseToken.userId)
 
         const infosLike = {
             postId: postid,
-            userId: parseToken.userId
+            userId: parseToken.userId,
+            usersLiked: []
         }
+        console.log(JSON.stringify(infosLike))
+        console.log(parseToken.token)
 
-        axios.post(`http://localhost:3001/api/posts/${postid}/like/`, {
+        axios.post(`http://localhost:3001/api/posts/${postid}/like`, {
             headers: {
                 'Content-Type': 'application/json',
                 authorization: `Bearer ${parseToken.token}`
@@ -123,7 +127,7 @@ const Post = () => {
             .then(({ data }) => {
                 setUser(data)
             })
-        }, [])
+    }, [])
 
         
             

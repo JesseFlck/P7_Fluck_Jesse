@@ -3,6 +3,7 @@ import axios from "axios"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
+//import UserId from '../utils/userId'
 const token = localStorage.getItem('token');
 const parseToken = JSON.parse(token);
 
@@ -34,11 +35,11 @@ const CreatePost = () => {
             })
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (!window.localStorage.token) {
             navigate('/')
         }
-    }, [])
+    }, [])*/
 
     const [user, setUser] = useState({});
         axios.get("http://localhost:3001/api/auth/user/" + parseToken.userId, {
