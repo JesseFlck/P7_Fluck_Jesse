@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom'
+import { useForm } from "react-hook-form";
 //import UserOnline from "../utils/userOnline";
 import '../styles/index.scss'
 import moment from 'moment';
@@ -21,7 +22,6 @@ const Post = () => {
 
     const [post, setPost] = useState([]);
     const [user, setUser] = useState({});
-    const [likes, setLikes] = useState({});
     const [isDelete, setIsDelete] = useState(false);
 
 
@@ -55,8 +55,6 @@ const Post = () => {
 
     // modification d'un post
     const updatePost = (postid) => {
-        console.log(parseToken.userId)
-        console.log(post.userId)
         if(parseToken.userId === post.userId || user.isAdmin){
                 navigate("/modifierpost")
             
@@ -81,29 +79,22 @@ const Post = () => {
 
     // Gestion des likes d'un post
 
-
     const liked = (postid) => {
+        
+        const formdata = new FormData()
+        formdata.append('userId', parseToken.userId)
 
-        const infosLike = {
-            postId: postid,
-            userId: parseToken.userId,
-            usersLiked: []
-        }
-        console.log(JSON.stringify(infosLike))
-        console.log(parseToken.token)
-
-        axios.post(`http://localhost:3001/api/posts/${postid}/like`, {
+        axios.post(`http://localhost:3001/api/posts/${postid}/like/`, formdata, {
             headers: {
                 'Content-Type': 'application/json',
                 authorization: `Bearer ${parseToken.token}`
             },
-            body: JSON.stringify(infosLike)
         })
             .then(() => {
                 getposts()
             })
             .catch(err => {
-                console.log('bonjour', err);
+                console.log(err);
             })
     }
             

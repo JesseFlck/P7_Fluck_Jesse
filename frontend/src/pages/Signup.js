@@ -44,11 +44,9 @@ const Signup = () => {
         if (!passwordRegex.validate(password)) {
             passwordError.innerHTML = "le mot de passe doit contenir une majuscule, une minuscule et au moins 6 caracteres"
         }
-        console.log('test')
 
 
         if ((emailRegex.test(email) === true) && (nameRegex.test(lastName) === true) && (firstnameRegex.test(firstName) === true) && (passwordRegex.validate(password) === true)) {
-            console.log('test2')
             const data = {
                 firstName,
                 lastName,
@@ -67,7 +65,7 @@ const Signup = () => {
             fetch(`http://localhost:3001/api/auth/signup`, promise)
     
             .then((res) => {
-                console.log((res))
+                //console.log((res))
                     alert("Utilisateur créé avec succès ! Vous pouvez maintenant vous connecter :)")
 
             })

@@ -39,7 +39,6 @@ exports.newPost = (req, res, next) => {
                 message: error.message
             }));
     } else {
-        console.log(req.file);
         return res.status(403).json({
             message: "Un champ ne peut être vide"
         });
@@ -57,8 +56,6 @@ exports.updatePost = (req, res, next) => {
                 _id: id
             })
             .then(post => {
-                console.log(post.userId)
-                console.log(req.userId)
                 if (toString(post.userId) === toString(req.body.userId) || req.auth.isAdmin) {
                     Post.findOneAndUpdate({
                             _id: id
@@ -228,15 +225,14 @@ exports.likePost = (req, res) => {
             _id: id
         })
         .then((post) => {
-            if (post.usersLiked.includes(req.body.userId)) {
+            if (post.usersLiked.includes(req.userId)) {
                 Post.updateOne({
                             _id: id
                         }, {
                             $pull: {
-                                usersLiked: req.body.userId
+                                usersLiked: req.userId
                             },
-                        },
-                        console.log(post.usersLiked.length)
+                        }
                     )
 
                     .then(() =>
@@ -252,10 +248,9 @@ exports.likePost = (req, res) => {
                             _id: id
                         }, {
                             $push: {
-                                usersLiked: req.body.userId
+                                usersLiked: req.userId
                             },
-                        },
-                        console.log(post.usersLiked.length)
+                        }
                     )
 
                     .then(() => res.status(200).json({

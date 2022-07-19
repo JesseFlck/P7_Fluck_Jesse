@@ -45,8 +45,6 @@ exports.signup = (req, res, next) => {
         })
         .then(user => {
             if (user) {
-                console.log(user);
-                console.log(email);
                 return res.status(400).json({
                     error: 'Cet email est déjà utilisé'
                 });
@@ -159,7 +157,7 @@ exports.modifyUser = (req, res, next) => {
               console.error(error);
               throw error;
             }
-            console.log(`DEBUG image deleted : images/${filenameDb}`);
+            //console.log(`DEBUG image deleted : images/${filenameDb}`);
           });
         }
   
@@ -303,7 +301,6 @@ exports.deleteUserImage = (req, res, next) => {
         .then((user) => {
             if (toString(user._id) === toString(req.body.userId) || req.auth.isAdmin) {
                 const imgUrl = req.body;
-                console.log(imgUrl)
                 const filename = user.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
                     User.findOneAndUpdate({
